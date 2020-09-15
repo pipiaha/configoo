@@ -1,4 +1,4 @@
-# config-mapper
+# configoo
 
 #### 介绍
 游戏配置文件解析器
