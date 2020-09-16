@@ -7,7 +7,7 @@ const decode = function (file, options) {
         console.log('decoder not found for ' + type);
         return;
     }
-    fun.apply(file, options);
+    fun(file, options);
 }
 
 const decodeXlsx = function (file, options) {
