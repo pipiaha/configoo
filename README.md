@@ -44,11 +44,74 @@
 2.  xxxx
 3.  xxxx
 
+electron+vue 环境安装
+
+* 工程目录下添加文件 `vue.config.js`
+* `src`目录下添加`background.js`
+
+* electron 版本选择了v11.1.1；
+* vue-cli-plugin-electron-builder版本选择了2.0.0-rc.5；
+* 多次使用npm安装均失败，效果奇差。这里选择yarn，并使用了代理fq，为WebStorm配置了Proxy；
+* 执行 `yarn add electron` （没代理fq可以尝试[切换yarn源](https://zhuanlan.zhihu.com/p/108370177)）；
+* 运行`electron`命令检查安装结果；
+* 执行 `vue add electron-builder`；
+
+参考
+
+ [vue-cli-plugin-electron-builder](https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/v2.0.0-rc.4)
+ 
+ [electron](https://github.com/electron/electron)
+
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  web调试
+2.  web打包
+3.  electron+vue调试
+
+To start a development server:
+If you use Yarn (strongly recommended):
+
+```shell script
+yarn electron:serve
+```
+
+or if you use NPM:
+
+```shell script
+npm run electron:serve
+```
+
+4.  electron+vue打包
+
+To build your app:
+With Yarn:
+
+```shell script
+yarn electron:build
+```
+
+or with NPM:
+
+```shell script
+npm run electron:build
+```
+To see more documentation, [visit our website](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/guide.html)
+
+electron+vue 的调试和打包，还可以使用`package.json`中的命令：
+
+```json
+{
+    "electron:build": "vue-cli-service electron:build",
+    "electron:serve": "vue-cli-service electron:serve"
+}
+```
+
+即：
+
+```shell script 
+    vue run electron:build
+    vue run electron:serve
+```
 
 #### 参与贡献
 
