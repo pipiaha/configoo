@@ -120,7 +120,7 @@ electron+vue 的调试和打包，还可以使用`package.json`中的命令：
 * windows 分别放在`C:\\user\AppData\electron\Cache\`下,
  `C:\\user\AppData\electron-builder\cache\winCodeSign\`下（需要解压）
  `C:\\user\AppData\electron-builder\cache\nsis\`下（需要解压）
- `C:\\user\AppData\electron-builder\cache\nsis-resources\`下（需要解压）
+ `C:\\user\AppData\electron-builder\cache\nsis\nsis-resources\`下（需要解压）
 * MacOS `???`
 
 [参考](https://blog.csdn.net/cctvcqupt/article/details/87904368)
