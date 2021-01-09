@@ -113,6 +113,12 @@ electron+vue 的调试和打包，还可以使用`package.json`中的命令：
     vue run electron:serve
 ```
 
+打包过程中，首次使用`electron-builder`有可能会卡在下载
+`electron-xx-xx.zip` 和 `winCodeSign-xxx.gz` 上，
+手动下载后，放在
+
+* windows `C:\\user\AppData\electron\Cache\`下
+* MacOS `???`
 #### 参与贡献
 
 1.  Fork 本仓库

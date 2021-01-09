@@ -3,10 +3,10 @@ module.exports = {
         electronBuilder: {
             builderOptions: {
                 win: {
-                    icon: './public/favicon.ico'
+                    icon: './public/sdx.jpg'
                 },
                 mac: {
-                    icon: './public/favicon.ico'
+                    icon: './public/sdx.jpg'
                 },
                 productName: ''
             }
