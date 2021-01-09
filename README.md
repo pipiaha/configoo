@@ -114,11 +114,17 @@ electron+vue 的调试和打包，还可以使用`package.json`中的命令：
 ```
 
 打包过程中，首次使用`electron-builder`有可能会卡在下载
-`electron-xx-xx.zip` 和 `winCodeSign-xxx.gz` 上，
+`electron-xx-xx.zip` ,`winCodeSign-xxx.gz`, `nsis-xx.gz`,`nsis-resource-xx.gz`上，
 手动下载后，放在
 
-* windows `C:\\user\AppData\electron\Cache\`下
+* windows 分别放在`C:\\user\AppData\electron\Cache\`下,
+ `C:\\user\AppData\electron-builder\cache\winCodeSign\`下（需要解压）
+ `C:\\user\AppData\electron-builder\cache\nsis\`下（需要解压）
+ `C:\\user\AppData\electron-builder\cache\nsis-resources\`下（需要解压）
 * MacOS `???`
+
+[参考](https://blog.csdn.net/cctvcqupt/article/details/87904368)
+
 #### 参与贡献
 
 1.  Fork 本仓库
