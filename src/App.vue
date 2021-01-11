@@ -11,6 +11,18 @@
             <uploader-list></uploader-list>
         </uploader>
 
+        <el-card>
+            <div slot="header" class="clearfix">
+                <span>卡片名称</span>
+                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+            </div>
+            <div>
+                <transition>
+                    <router-view/>
+                </transition>
+            </div>
+        </el-card>
+
         <HelloWorld msg="Welcome to Your Vue.js App"/>
     </div>
 </template>

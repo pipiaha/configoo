@@ -1,14 +1,16 @@
 import Router from 'vue-router'
+import Home from "../Home";
 
 export default new Router({
     mode: 'history',
     routes: [
-        // {
-        //     // 主页
-        //     path: '/',
-        //     component: WikiPanel,
-        //     name: 'home',
-        // },
+
+        {
+            // 主页
+            path: '/',
+            component: Home,
+            name: 'home',
+        },
         // {
         //     // FAQ
         //     path: '/faq',
