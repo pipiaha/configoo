@@ -1,18 +1,46 @@
 const state = {
 
-    templates: [],
+    mods: [
+        {
+            index: 1,
+            path: "/home",
+        },
+        {
+            index: 2,
+            path: "/file_select",
+        },
+    ],
+    currentModules: {
+        index: 0,
+        path: "/",
+        onLoad: null,
+        beforeSubmit: null,
+        afterSubmit: null,
+    },
+    setting: {
+        fileType: null,
+        fileMultiUpload: false,
+
+    },
 }
 
-const mutations = {
+const mutations = {}
 
-    fetchFormTemplates: (state, pageNumber, pageSize) => {
-        console.log(pageSize);
-    }
-}
+const actions = {}
 
-const actions = {
-
-}
+// const mutations = {
+//     setUserMenus: function (state, data) {
+//         state.userMenus = data;
+//     },
+// };
+//
+// const actions = {
+//     fetchUserMenu: function ({commit}) {
+//         userTreeView().then(response => {
+//             commit('setUserMenus', response);
+//         })
+//     },
+// };
 
 export default {
     namespaced: true,

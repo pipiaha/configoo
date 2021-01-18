@@ -6,7 +6,6 @@
             <el-radio v-model="selectedType" :label="'xls/xlsx'" border>xls/xlsx</el-radio>
             <el-radio v-model="selectedType" :label="'xml'" border>xml</el-radio>
         </div>
-        <el-button >下一步</el-button>
     </div>
 </template>
 

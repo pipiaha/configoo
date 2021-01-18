@@ -1,5 +1,6 @@
 import Router from 'vue-router'
 import Home from "../Home";
+import FileSelector from "../FileSelector";
 
 export default new Router({
     mode: 'history',
@@ -10,6 +11,12 @@ export default new Router({
             path: '/',
             component: Home,
             name: 'home',
+        },
+        {
+            // 上传文件
+            path: '/file_select',
+            component: FileSelector,
+            name: 'file_select',
         },
         // {
         //     // FAQ

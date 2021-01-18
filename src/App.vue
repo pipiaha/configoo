@@ -12,14 +12,17 @@
         </uploader>
 
         <el-card>
-            <div slot="header" class="clearfix">
-                <span>卡片名称</span>
-                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+            <div slot="header" class="card-header clearfix">
+                <span class="title">卡片名称</span>
+<!--                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
             </div>
             <div>
                 <transition>
                     <router-view/>
                 </transition>
+            </div>
+            <div class="card-footer">
+                <el-button type="primary" size="small" @click="next">下一步</el-button>
             </div>
         </el-card>
 
@@ -52,6 +55,9 @@
                     return;
                 }
                 decoder.decode(file, {});
+            },
+            next: function () {
+
             }
         }
     }
@@ -65,5 +71,20 @@
         text-align: center;
         color: #2c3e50;
         margin-top: 60px;
+    }
+
+    .card-header {
+        margin: 12px 0;
+        min-height: 20px;
+    }
+
+    .card-header .title {
+        float: left;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .card-footer {
+        margin: 12px 0;
     }
 </style>
