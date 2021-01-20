@@ -1,6 +1,7 @@
 import Router from 'vue-router'
 import Home from "../Home";
 import FileSelector from "../FileSelector";
+import TypeSelector from "../TypeSelector";
 
 export default new Router({
     mode: 'history',
@@ -11,6 +12,12 @@ export default new Router({
             path: '/',
             component: Home,
             name: 'home',
+        },
+        {
+            // 选择文件类型
+            path: '/type_select',
+            component: TypeSelector,
+            name: 'type_select',
         },
         {
             // 上传文件

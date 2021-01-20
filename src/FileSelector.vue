@@ -34,6 +34,15 @@
                 },
             };
         },
+        created() {
+            console.log('file selector created');
+        },
+        mounted() {
+            console.log('file selector mounted');
+        },
+        updated() {
+            console.log('file selector updated');
+        },
         methods: {
             onUploadConfirm: function (dir, file) {
                 // console.log(file);

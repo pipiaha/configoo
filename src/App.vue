@@ -14,7 +14,7 @@
         <el-card>
             <div slot="header" class="card-header clearfix">
                 <span class="title">卡片名称</span>
-<!--                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
+                <!--                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
             </div>
             <div>
                 <transition>
@@ -22,6 +22,7 @@
                 </transition>
             </div>
             <div class="card-footer">
+                <el-button type="primary" size="small" @click="prev">上一步</el-button>
                 <el-button type="primary" size="small" @click="next">下一步</el-button>
             </div>
         </el-card>
@@ -41,12 +42,24 @@
         },
         data() {
             return {
+                modIndex: 0,
                 options: {
                     // target: '/uploadCategory',//SpringBoot后台接收文件夹数据的接口
                     // testChunks: false//是否分片-不分片
                 },
 
             };
+        },
+        computed: {
+            mods() {
+                return this.$store.state.app.mods;
+            },
+            currentModule() {
+                return this.$store.state.app.currentModule;
+            }
+        },
+        created() {
+
         },
         methods: {
             onUploadConfirm: function (dir, file) {
@@ -56,8 +69,25 @@
                 }
                 decoder.decode(file, {});
             },
+            prev: function () {
+                let mod = this.mods.find(m => m.index === this.modIndex - 1);
+                if (mod) {
+                    this.$router.push(mod.path).then(() => {
+                        this.modIndex -= 1;
+                    });
+                } else {
+                    this.$message.error('找不到模块');
+                }
+            },
             next: function () {
-
+                let mod = this.mods.find(m => m.index === this.modIndex + 1);
+                if (mod) {
+                    this.$router.push(mod.path).then(() => {
+                        this.modIndex += 1;
+                    });
+                } else {
+                    this.$message.error('找不到模块');
+                }
             }
         }
     }

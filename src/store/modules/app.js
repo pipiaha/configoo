@@ -3,14 +3,14 @@ const state = {
     mods: [
         {
             index: 1,
-            path: "/home",
+            path: "/type_select",
         },
         {
             index: 2,
             path: "/file_select",
         },
     ],
-    currentModules: {
+    currentModule: {
         index: 0,
         path: "/",
         onLoad: null,
