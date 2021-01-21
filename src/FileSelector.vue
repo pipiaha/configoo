@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>文件上传</h1>
+        <h1>{{mod.title}}</h1>
 
         <div>
             <el-radio v-model="multiple" label="false">单文件</el-radio>
@@ -27,6 +27,13 @@
         name: "FileSelector",
         data() {
             return {
+                mod: {
+                    title: '文件上传',
+                    onLoad: null,
+                    beforeSubmit: null,
+                    afterSubmit: null,
+                },
+
                 multiple: false,
                 options: {
                     // target: '/uploadCategory',//SpringBoot后台接收文件夹数据的接口

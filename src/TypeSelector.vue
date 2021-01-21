@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>选择文件类型</h1>
+        <h1>{{title}}</h1>
         <div>
             <el-radio v-model="selectedType" :label="'csv'" border>csv</el-radio>
             <el-radio v-model="selectedType" :label="'xls/xlsx'" border>xls/xlsx</el-radio>
@@ -14,6 +14,7 @@
         name: "TypeSelector",
         data() {
             return {
+                title: '选择文件类型',
                 selectedType: null,
             };
         },

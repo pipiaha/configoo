@@ -12,7 +12,7 @@ const state = {
     ],
     currentModule: {
         index: 0,
-        path: "/",
+        title: 'configoo',
         onLoad: null,
         beforeSubmit: null,
         afterSubmit: null,
