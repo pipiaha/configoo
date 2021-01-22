@@ -70,7 +70,7 @@
                 decoder.decode(file, {});
             },
             prev: function () {
-                let mod = this.mods.find(m => m.index === this.modIndex - 1);
+                let mod = this.mods[this.modIndex - 1];
                 if (mod) {
                     this.$router.push(mod.path).then(() => {
                         this.modIndex -= 1;
@@ -80,7 +80,7 @@
                 }
             },
             next: function () {
-                let mod = this.mods.find(m => m.index === this.modIndex + 1);
+                let mod = this.mods[this.modIndex + 1];
                 if (mod) {
                     this.$router.push(mod.path).then(() => {
                         this.modIndex += 1;
