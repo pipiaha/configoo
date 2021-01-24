@@ -13,7 +13,7 @@
 
         <el-card>
             <div slot="header" class="card-header clearfix">
-                <span class="title">卡片名称</span>
+                <span class="title">configoo - {{currentModule.title}}</span>
                 <!--                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
             </div>
             <div>
@@ -42,7 +42,6 @@
         },
         data() {
             return {
-                modIndex: 0,
                 options: {
                     // target: '/uploadCategory',//SpringBoot后台接收文件夹数据的接口
                     // testChunks: false//是否分片-不分片
@@ -56,10 +55,24 @@
             },
             currentModule() {
                 return this.$store.state.app.currentModule;
-            }
+            },
+            setting() {
+                return this.$store.state.app.setting;
+            },
         },
         created() {
-
+        },
+        mounted() {
+            // FIXME 相同route 路由报错问题
+            let modIndex = this.mods.findIndex(m => m.path === this.$route.path);
+            if (modIndex >= 0) {
+                let mod = this.mods[modIndex];
+                this.$router.push(mod.path).then(() => {
+                    this.$store.dispatch('app/updateModuleIndex', modIndex);
+                }).catch(() => {
+                    this.$store.dispatch('app/updateModuleIndex', modIndex);
+                });
+            }
         },
         methods: {
             onUploadConfirm: function (dir, file) {
@@ -69,25 +82,45 @@
                 }
                 decoder.decode(file, {});
             },
+            canProceed: function () {
+                return this.currentModule.canProceed && this.currentModule.canProceed();
+            },
             prev: function () {
-                let mod = this.mods[this.modIndex - 1];
-                if (mod) {
-                    this.$router.push(mod.path).then(() => {
-                        this.modIndex -= 1;
-                    });
-                } else {
-                    this.$message.error('找不到模块');
+                let mod = this.mods[this.currentModule.index - 1];
+                if (!mod) {
+                    this.$message.error('没有啦！');
+                    return;
                 }
+                this.$router.push(mod.path).then(() => {
+                    this.$store.dispatch('app/updateModuleIndex', this.currentModule.index - 1)
+                        .catch(err => err);
+                });
             },
             next: function () {
-                let mod = this.mods[this.modIndex + 1];
-                if (mod) {
-                    this.$router.push(mod.path).then(() => {
-                        this.modIndex += 1;
-                    });
-                } else {
-                    this.$message.error('找不到模块');
+                let mod = this.mods[this.currentModule.index + 1];
+                if (!mod) {
+                    this.$message.error('没有啦！');
+                    return;
                 }
+                if (!this.canProceed()) {
+                    this.$message.error('当前步骤未完成');
+                    return;
+                }
+                //
+                if (this.currentModule.beforeSubmit) {
+                    this.currentModule.beforeSubmit();
+                }
+                if (this.currentModule.onSubmit) {
+                    this.currentModule.onSubmit();
+                }
+                if (this.currentModule.afterSubmit) {
+                    this.currentModule.afterSubmit();
+                }
+                console.log(this.currentModule);
+                this.$router.push(mod.path).then(() => {
+                    this.$store.dispatch('app/updateModuleIndex', this.currentModule.index + 1)
+                        .catch(err => err);
+                });
             }
         }
     }

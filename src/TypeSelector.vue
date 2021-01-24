@@ -18,15 +18,38 @@
                 selectedType: null,
             };
         },
+        computed: {
+            setting() {
+                return this.$store.state.app.setting;
+            },
+        },
         created() {
             console.log('type selector created');
+            this.onLoad();
         },
         mounted() {
             console.log('type selector mounted');
         },
-        updated() {
-            console.log('type selector updated');
-        },
+        methods: {
+            onLoad: function () {
+                //
+                this.selectedType = this.setting.selectedType;
+                //
+                this.$store.dispatch('app/updateModuleValue', {
+                    title: this.title,
+                    canProceed: this.canProceed,
+                    onSubmit: this.onSubmit,
+                });
+            },
+            canProceed: function () {
+                return this.selectedType;
+            },
+            // beforeSubmit: null,
+            onSubmit: function () {
+                this.$store.dispatch('app/updateSettingValue', {selectedType: this.selectedType});
+            },
+            // afterSubmit: null,
+        }
     }
 </script>
 

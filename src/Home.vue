@@ -9,8 +9,24 @@
         name: "Home",
         data() {
             return {
-                selectedType: null,
+                title: ' :)',
             };
+        },
+        computed: {
+            setting() {
+                return this.$store.state.app.setting;
+            },
+        },
+        created() {
+            this.onLoad();
+        },
+        methods: {
+            onLoad: function () {
+                this.$store.dispatch('app/updateModuleValue', {
+                    title: this.title,
+                    canProceed: () => true,
+                });
+            },
         }
     }
 </script>

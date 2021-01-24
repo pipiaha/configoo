@@ -11,6 +11,12 @@ export default new Router({
             // 主页
             path: '/',
             component: Home,
+            name: 'main',
+        },
+        {
+            // home
+            path: '/home',
+            component: Home,
             name: 'home',
         },
         {

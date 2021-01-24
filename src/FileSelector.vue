@@ -3,8 +3,8 @@
         <h1>{{mod.title}}</h1>
 
         <div>
-            <el-radio v-model="multiple" label="false">单文件</el-radio>
-            <el-radio v-model="multiple" label="true">文件夹</el-radio>
+            <el-radio v-model="multiple" :label="false">单文件</el-radio>
+            <el-radio v-model="multiple" :label="true">文件夹</el-radio>
         </div>
         <div v-if="multiple">
             <uploader :key="1" :options="options" class="uploader-example"

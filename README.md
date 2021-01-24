@@ -91,7 +91,7 @@ electron+vue 环境安装
 * electron 版本选择了v11.1.1；
 * vue-cli-plugin-electron-builder版本选择了2.0.0-rc.5；
 * 多次使用npm安装均失败，效果奇差。这里选择yarn，并使用了代理fq，为WebStorm配置了Proxy；
-* 执行 `yarn add electron` （没代理fq可以尝试[切换yarn源](https://zhuanlan.zhihu.com/p/108370177)）；
+* 执行 `yarn add electron` 或 `npm install electron` （没代理fq可以尝试 [切换yarn源](https://zhuanlan.zhihu.com/p/108370177) ）；
 * 运行`electron`命令检查安装结果；
 * 执行 `vue add electron-builder`；
 
@@ -160,7 +160,7 @@ electron+vue 的调试和打包，还可以使用`package.json`中的命令：
  `C:\\user\AppData\electron-builder\cache\winCodeSign\`下（需要解压）
  `C:\\user\AppData\electron-builder\cache\nsis\`下（需要解压）
  `C:\\user\AppData\electron-builder\cache\nsis\nsis-resources\`下（需要解压）
-* MacOS `???`
+* MacOS `~/Library/Caches/electron/`
 
 [参考](https://blog.csdn.net/cctvcqupt/article/details/87904368)
 

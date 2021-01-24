@@ -14,8 +14,10 @@ const state = {
     currentModule: {
         index: 0,
         title: 'configoo',
-        onLoad: null,
+        // onLoad: null,
+        canProceed: null,
         beforeSubmit: null,
+        onSubmit: null,
         afterSubmit: null,
     },
     setting: {
@@ -25,9 +27,30 @@ const state = {
     },
 }
 
-const mutations = {}
+const mutations = {
+    updateSettingValue: function (state, obj) {
+        state.setting = Object.assign(state.setting, obj);
+    },
+    updateModuleValue: function (state, obj) {
+        state.currentModule = Object.assign(state.currentModule, obj);
+    }
+}
 
-const actions = {}
+const actions = {
+    updateModuleIndex: function ({commit}, index) {
+        commit('updateModuleValue', {index: index});
+    },
+    updateModuleValue: function ({commit}, obj) {
+        obj.title = obj.title ? obj.title : '';
+        obj.beforeSubmit = obj.beforeSubmit ? obj.beforeSubmit : null;
+        obj.onSubmit = obj.onSubmit ? obj.onSubmit : null;
+        obj.afterSubmit = obj.afterSubmit ? obj.afterSubmit : null;
+        commit('updateModuleValue', obj);
+    },
+    updateSettingValue: function ({commit}, obj) {
+        commit('updateSettingValue', obj);
+    }
+}
 
 // const mutations = {
 //     setUserMenus: function (state, data) {
