@@ -1,7 +1,5 @@
 <template>
     <div>
-        <h1>{{mod.title}}</h1>
-
         <div>
             <el-radio v-model="multiple" :label="false">单文件</el-radio>
             <el-radio v-model="multiple" :label="true">文件夹</el-radio>
@@ -21,19 +19,13 @@
 </template>
 
 <script>
-    import decoder from "./modules/decoder";
+    import decoder from "../../modules/decoder";
 
     export default {
         name: "FileSelector",
         data() {
             return {
-                mod: {
-                    title: '文件上传',
-                    onLoad: null,
-                    beforeSubmit: null,
-                    afterSubmit: null,
-                },
-
+                title: '文件上传',
                 multiple: false,
                 options: {
                     // target: '/uploadCategory',//SpringBoot后台接收文件夹数据的接口
@@ -41,14 +33,17 @@
                 },
             };
         },
+        computed: {
+            setting() {
+                return this.$store.state.app.setting;
+            },
+        },
         created() {
             console.log('file selector created');
+            this.onLoad();
         },
         mounted() {
             console.log('file selector mounted');
-        },
-        updated() {
-            console.log('file selector updated');
         },
         methods: {
             onUploadConfirm: function (dir, file) {
@@ -57,6 +52,12 @@
                     return;
                 }
                 decoder.decode(file, {});
+            },
+            onLoad: function () {
+                this.$store.dispatch('app/updateModuleValue', {
+                    title: this.title,
+                    canProceed: () => true,
+                });
             },
         }
     }

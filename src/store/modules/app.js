@@ -2,13 +2,16 @@ const state = {
 
     mods: [
         {
-            path: "/home",
+            path: "/home",// 主页
         },
         {
-            path: "/type_select",
+            path: "/type_select",// 输入文件类型选择
         },
         {
-            path: "/file_select",
+            path: "/file_select",// 文件路径
+        },
+        {
+            path: "/setting_view",// 结果预览
         },
     ],
     currentModule: {

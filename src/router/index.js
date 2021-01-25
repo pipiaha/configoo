@@ -1,7 +1,8 @@
 import Router from 'vue-router'
-import Home from "../Home";
-import FileSelector from "../FileSelector";
-import TypeSelector from "../TypeSelector";
+import Home from "../components/wizard/Home";
+import FileSelector from "../components/wizard/FileSelector";
+import TypeSelector from "../components/wizard/TypeSelector";
+import SettingView from "../components/wizard/SettingView";
 
 export default new Router({
     mode: 'history',
@@ -30,6 +31,12 @@ export default new Router({
             path: '/file_select',
             component: FileSelector,
             name: 'file_select',
+        },
+        {
+            // 预览
+            path: '/setting_view',
+            component: SettingView,
+            name: 'setting_view',
         },
         // {
         //     // FAQ
