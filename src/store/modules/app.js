@@ -27,6 +27,7 @@ const state = {
         fileType: null,
         fileMultiUpload: false,
 
+        headParser: null,
     },
 }
 
