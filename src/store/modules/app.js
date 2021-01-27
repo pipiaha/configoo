@@ -8,6 +8,9 @@ const state = {
             path: "/type_select",// 输入文件类型选择
         },
         {
+            path: "/meta_pattern",// 元数据解析
+        },
+        {
             path: "/file_select",// 文件路径
         },
         {
@@ -24,10 +27,11 @@ const state = {
         afterSubmit: null,
     },
     setting: {
+        selectedType: null,
         fileType: null,
         fileMultiUpload: false,
 
-        headParser: null,
+        metaParser: null,
     },
 }
 

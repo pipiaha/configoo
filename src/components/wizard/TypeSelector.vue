@@ -2,9 +2,9 @@
     <div>
         <h1>{{title}}</h1>
         <div>
-            <el-radio v-model="selectedType" :label="'csv'" border>csv</el-radio>
-            <el-radio v-model="selectedType" :label="'xls/xlsx'" border>xls/xlsx</el-radio>
-            <el-radio v-model="selectedType" :label="'xml'" border>xml</el-radio>
+            <el-radio v-for="(option,index) in typeOptions" :key="index" v-model="selectedType" :label="option" border>
+                {{option}}
+            </el-radio>
         </div>
     </div>
 </template>
@@ -15,6 +15,9 @@
         data() {
             return {
                 title: '选择文件类型',
+                typeOptions: [
+                    'csv', 'xls/xlsx', 'xml'
+                ],
                 selectedType: null,
             };
         },

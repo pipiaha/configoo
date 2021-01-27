@@ -89,7 +89,7 @@
                 if (this.currentModule.afterSubmit) {
                     this.currentModule.afterSubmit();
                 }
-                console.log(this.currentModule);
+                // console.log(this.currentModule);
                 this.$router.push(mod.path).then(() => {
                     this.$store.dispatch('app/updateModuleIndex', this.currentModule.index + 1)
                         .catch(err => err);

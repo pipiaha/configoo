@@ -43,8 +43,10 @@
                 });
             },
             settingRows: function () {
+                console.log(this.setting['metaParser'])
                 return Object.keys(this.setting).map(k => {
-                    return {key: k, value: this.setting[k]};
+                    let el = this.setting[k];
+                    return {key: k, value: (typeof el === 'string') ? el : JSON.stringify(el)};
                 });
             }
         }

@@ -3,6 +3,7 @@ import Home from "../components/wizard/Home";
 import FileSelector from "../components/wizard/FileSelector";
 import TypeSelector from "../components/wizard/TypeSelector";
 import SettingView from "../components/wizard/SettingView";
+import HeadPatternSelector from "../components/wizard/HeadPatternSelector";
 
 export default new Router({
     mode: 'history',
@@ -25,6 +26,12 @@ export default new Router({
             path: '/type_select',
             component: TypeSelector,
             name: 'type_select',
+        },
+        {
+            // 选择文件类型
+            path: '/meta_pattern',
+            component: HeadPatternSelector,
+            name: 'meta_pattern',
         },
         {
             // 上传文件
