@@ -16,7 +16,7 @@
                 <el-input @change="onMetaParserChange" v-model="server.type"/>
             </el-form-item>
             <el-form-item label="服务器列类型提取">
-                <el-input @change="onMetaParserChange" v-model="server.namePattern"/>
+                <el-input @change="onMetaParserChange" v-model="server.typePattern"/>
             </el-form-item>
             <el-divider/>
             <el-form-item label="客户端列名称所在行">
@@ -29,7 +29,7 @@
                 <el-input @change="onMetaParserChange" v-model="client.type"/>
             </el-form-item>
             <el-form-item label="客户端列类型提取">
-                <el-input @change="onMetaParserChange" v-model="client.namePattern"/>
+                <el-input @change="onMetaParserChange" v-model="client.typePattern"/>
             </el-form-item>
         </el-form>
     </div>
@@ -62,9 +62,16 @@
                 },
             }
         },
+        created() {
+            if (this.value) {
+                this.dataLine = this.value.dataLine;
+                this.server = (this.value.server || {});
+                this.client = (this.value.client || {});
+            }
+        },
         methods: {
             onMetaParserChange: function () {
-                this.$emit('metaParserChange', {server: this.server, client: this.client});
+                this.$emit('metaParserChange', {server: this.server, client: this.client, dataLine: this.dataLine});
             }
         }
     }
