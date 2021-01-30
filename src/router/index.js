@@ -4,6 +4,7 @@ import FileSelector from "../components/wizard/FileSelector";
 import TypeSelector from "../components/wizard/TypeSelector";
 import SettingView from "../components/wizard/SettingView";
 import HeadPatternSelector from "../components/wizard/HeadPatternSelector";
+import OutputSelector from "../components/wizard/OutputSelector";
 
 export default new Router({
     mode: 'history',
@@ -28,7 +29,7 @@ export default new Router({
             name: 'type_select',
         },
         {
-            // 选择文件类型
+            // 选择元数据解析模式
             path: '/meta_pattern',
             component: HeadPatternSelector,
             name: 'meta_pattern',
@@ -38,6 +39,12 @@ export default new Router({
             path: '/file_select',
             component: FileSelector,
             name: 'file_select',
+        },
+        {
+            // 输出参数设置
+            path: '/output',
+            component: OutputSelector,
+            name: 'output',
         },
         {
             // 预览

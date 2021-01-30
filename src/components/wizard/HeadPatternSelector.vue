@@ -18,11 +18,6 @@
                 title: '选择表头解析模式',
                 metaParser: {},
 
-                options: {
-                    'xls/xlsx': [],
-                    'json': [],
-                    'xml': []
-                }
             };
         },
         computed: {

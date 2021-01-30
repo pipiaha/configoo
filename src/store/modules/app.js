@@ -14,6 +14,9 @@ const state = {
             path: "/file_select",// 文件路径
         },
         {
+            path: "/output",// 输出设置
+        },
+        {
             path: "/setting_view",// 结果预览
         },
     ],
@@ -27,11 +30,22 @@ const state = {
         afterSubmit: null,
     },
     setting: {
-        selectedType: null,
+        selectedType: null,// 上传文件类型
         fileType: null,
         fileMultiUpload: false,
 
-        metaParser: null,
+        metaParser: null,// 文件解析器
+        output: {
+            naming: null,
+            records: {
+                type: null,
+                path: null,
+            },
+            sources: {
+                type: null,
+                path: null,
+            }
+        },// 输出规格设置
     },
 }
 
