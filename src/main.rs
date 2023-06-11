@@ -2,7 +2,9 @@
 
 use std::error::Error;
 use std::path::Path;
+
 use calamine::{open_workbook, RangeDeserializerBuilder, Reader, Xlsx};
+mod cc;
 
 fn main() {
     println!("Hello, world!");
@@ -15,7 +17,7 @@ fn main() {
     let file_path = Path::new("config/RhythmMasterConfig.xlsx");
     // 打开 XLSX 文件
     let mut workbook: Xlsx<_> = match open_workbook(file_path) {
-        Ok(wb) => wb ,
+        Ok(wb) => wb,
         Err(err) => {
             eprintln!("can not open file {}", err);
             return;
@@ -37,8 +39,7 @@ fn main() {
     for row in sheet.rows() {
         println!("row={:?}, row[0]={:?}", row, row[0]);
     }
-
-
+    let b = cc::model::ConfigHeaderBuilder::new();
 }
 
 // fn example() -> Result<(), Error> {
