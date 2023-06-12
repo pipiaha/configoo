@@ -39,15 +39,45 @@ fn main() {
     };
 
     let comment_row_index = 1;
-    let server_type_row_index = 2;
+    let server_type_row_index = 3;
     let client_type_row_index = 3;
-    let server_name_row_index = 4;
-    let client_name_row_index = 4;
+    let server_name_row_index = 2;
+    let client_name_row_index = 2;
+    let server_flag_index = 4;
+    let client_flag_index = 4;
+
+    let mut comments;
+    let mut server_types;
+    let mut client_types;
+    let mut server_names;
+    let mut client_names;
+    let mut server_flags;
+    let mut client_flags;
 
     let mut index = 0;
     for row in sheet.rows() {
         println!("row={:?}, row[0]={:?}", row, row[0]);
-        if index==comment_row_index {}
+        if index == comment_row_index {
+            comments = row.to_vec();
+        }
+        if index == server_type_row_index {
+            server_types = row.to_vec();
+        }
+        if index == client_type_row_index {
+            client_types = row.to_vec();
+        }
+        if index == server_name_row_index {
+            server_names = row.to_vec();
+        }
+        if index == client_name_row_index {
+            client_names = row.to_vec();
+        }
+        if index == server_flag_index {
+            server_flags = row.to_vec();
+        }
+        if index == client_flag_index {
+            client_flags = row.to_vec();
+        }
         index += 1;
     }
     let header = context::model::ConfigHeaderBuilder::new()
