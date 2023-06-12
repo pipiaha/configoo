@@ -1,5 +1,7 @@
+use std::fmt::{Display, Formatter};
+
 // config header cell unit
-#[derive(Default)]
+#[derive(Default,Debug)]
 pub struct ConfigHeader {
     index: i32,
     server_field_name: String,
@@ -15,7 +17,7 @@ pub struct ConfigHeaderBuilder {
 }
 
 impl ConfigHeaderBuilder {
-   pub fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             index: None,
             server_field_name: None,
@@ -39,7 +41,7 @@ impl ConfigHeaderBuilder {
         self.comment = Some(comment);
         self
     }
-    pub fn build(&mut self) -> ConfigHeader {
+    pub fn build(self) -> ConfigHeader {
         ConfigHeader {
             index: self.index.unwrap_or_default(),
             server_field_name: self.server_field_name.unwrap_or_default(),
@@ -50,6 +52,7 @@ impl ConfigHeaderBuilder {
 }
 
 // config column unit
+#[derive(Default,Debug)]
 pub struct ConfigColumn {
     header: ConfigHeader,
     value: String,
@@ -84,7 +87,7 @@ impl ConfigColumnBuilder {
         self
     }
 
-    pub fn build(&self) -> ConfigColumn {
+    pub fn build(self) -> ConfigColumn {
         ConfigColumn {
             header: self.header.unwrap_or_default(),
             value: self.value.unwrap_or_default(),
@@ -94,6 +97,7 @@ impl ConfigColumnBuilder {
 }
 
 // config row
+#[derive(Default,Debug)]
 pub struct ConfigRow {
     row_index: i32,
     data: Vec<ConfigColumn>,
@@ -122,7 +126,7 @@ impl ConfigRowBuilder {
         self
     }
 
-    pub fn build(&self) -> ConfigRow {
+    pub fn build(self) -> ConfigRow {
         ConfigRow {
             row_index: self.row_index.unwrap_or_default(),
             data: self.data.unwrap_or_default(),
@@ -131,6 +135,7 @@ impl ConfigRowBuilder {
 }
 
 // whole config data
+#[derive(Default,Debug)]
 pub struct ConfigTable {
     name: String,
     data: Vec<ConfigRow>,

@@ -4,7 +4,8 @@ use std::error::Error;
 use std::path::Path;
 
 use calamine::{open_workbook, RangeDeserializerBuilder, Reader, Xlsx};
-mod cc;
+
+mod context;
 
 fn main() {
     println!("Hello, world!");
@@ -36,10 +37,26 @@ fn main() {
             return;
         }
     };
+
+    let comment_row_index = 1;
+    let server_type_row_index = 2;
+    let client_type_row_index = 3;
+    let server_name_row_index = 4;
+    let client_name_row_index = 4;
+
+    let mut index = 0;
     for row in sheet.rows() {
         println!("row={:?}, row[0]={:?}", row, row[0]);
+        if index==comment_row_index {}
+        index += 1;
     }
-    let b = cc::model::ConfigHeaderBuilder::new();
+    let header = context::model::ConfigHeaderBuilder::new()
+        .set_index(1234)
+        .set_comment(String::from("comment"))
+        .set_server_field_name(String::from("nnn"))
+        .set_server_field_type(String::from("ttt"))
+        .build();
+    println!("{:?}", header);
 }
 
 // fn example() -> Result<(), Error> {
