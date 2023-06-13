@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use crate::context::model::ConfigTable;
 
 pub trait ConfigLoader {
@@ -9,4 +11,8 @@ pub trait ConfigExporter {
     fn export_with_default_dir(&self, t: &ConfigTable) -> bool {
         self.export(".", t)
     }
+}
+
+pub trait CodeExporter {
+    fn gen(&self, dir: &str, t: &ConfigTable) -> Result<bool, dyn Error>;
 }

@@ -92,7 +92,7 @@ fn main() {
     }
 
     //  export
-    let c = export::exporter::CsvExporter {};
+    let c = CsvExporter {};
     c.export_with_default_dir(&ConfigTable {
         name: "test.csv".to_string(),
         data,
