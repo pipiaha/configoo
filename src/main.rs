@@ -1,20 +1,27 @@
 // use office::Excel;
 
+use std::env;
 use std::error::Error;
+use std::fs::File;
+use std::ops::Not;
 use std::path::Path;
 
 use calamine::{open_workbook, RangeDeserializerBuilder, Reader, Xlsx};
+use crate::context::func::ConfigExporter;
+use crate::context::model::{ConfigHeaderBuilder, ConfigTable, ConfigTableBuilder};
+use crate::export::exporter::CsvExporter;
 
 mod context;
+mod export;
 
 fn main() {
+    // let args = env::args();
     println!("Hello, world!");
     // let mut excel = Excel::open("config/file.xlsx").unwrap();
     // let r = excel.worksheet_range("Sheet1").unwrap();
     // for row in r.rows() {
     //     println!("row={:?}, row[0]={:?}", row, row[0]);
     // }
-
     let file_path = Path::new("config/RhythmMasterConfig.xlsx");
     // 打开 XLSX 文件
     let mut workbook: Xlsx<_> = match open_workbook(file_path) {
@@ -38,21 +45,23 @@ fn main() {
         }
     };
 
-    let comment_row_index = 1;
-    let server_type_row_index = 3;
-    let client_type_row_index = 3;
-    let server_name_row_index = 2;
-    let client_name_row_index = 2;
-    let server_flag_index = 4;
-    let client_flag_index = 4;
+    let comment_row_index = 0;
+    let server_type_row_index = 2;
+    let client_type_row_index = 2;
+    let server_name_row_index = 1;
+    let client_name_row_index = 1;
+    let server_flag_index = 3;
+    let client_flag_index = 3;
 
-    let mut comments;
-    let mut server_types;
+    let mut comments = vec![];
+    let mut server_types = vec![];
     let mut client_types;
-    let mut server_names;
+    let mut server_names = vec![];
     let mut client_names;
-    let mut server_flags;
+    let mut server_flags = vec![];
     let mut client_flags;
+
+    let mut data = vec![];
 
     let mut index = 0;
     for row in sheet.rows() {
@@ -78,13 +87,39 @@ fn main() {
         if index == client_flag_index {
             client_flags = row.to_vec();
         }
+        data.push(row.to_vec());
         index += 1;
     }
-    let header = context::model::ConfigHeaderBuilder::new()
+
+    //  export
+    let c = export::exporter::CsvExporter {};
+    c.export_with_default_dir(&ConfigTable {
+        name: "test.csv".to_string(),
+        data,
+        header: vec![],
+    });
+
+    // server side code
+    let mut tb_builder = ConfigTableBuilder::new();
+    for (index, f) in server_flags.iter().enumerate() {
+        let s = f.as_string().unwrap();
+        let fmt_flag = s.trim();
+        if fmt_flag == "server" || fmt_flag == "all" {
+            let hb = ConfigHeaderBuilder::new()
+                .set_field_name(server_names[index].as_string().unwrap())
+                .set_field_type(server_types[index].as_string().unwrap())
+                .set_comment(comments[index].as_string().unwrap());
+            tb_builder.add_header(hb);
+        }
+    }
+    // client side code
+
+
+    let header = ConfigHeaderBuilder::new()
         .set_index(1234)
         .set_comment(String::from("comment"))
-        .set_server_field_name(String::from("nnn"))
-        .set_server_field_type(String::from("ttt"))
+        .set_field_name(String::from("nnn"))
+        .set_field_type(String::from("ttt"))
         .build();
     println!("{:?}", header);
 }

@@ -1,18 +1,19 @@
 use std::fmt::{Display, Formatter};
+use calamine::DataType;
 
 // config header cell unit
-#[derive(Default,Debug)]
+#[derive(Default, Debug)]
 pub struct ConfigHeader {
     index: i32,
-    server_field_name: String,
-    server_field_type: String,
+    field_name: String,
+    field_type: String,
     comment: String,
 }
 
 pub struct ConfigHeaderBuilder {
     index: Option<i32>,
-    server_field_name: Option<String>,
-    server_field_type: Option<String>,
+    field_name: Option<String>,
+    field_type: Option<String>,
     comment: Option<String>,
 }
 
@@ -20,8 +21,8 @@ impl ConfigHeaderBuilder {
     pub fn new() -> Self {
         Self {
             index: None,
-            server_field_name: None,
-            server_field_type: None,
+            field_name: None,
+            field_type: None,
             comment: None,
         }
     }
@@ -29,12 +30,12 @@ impl ConfigHeaderBuilder {
         self.index = Some(index);
         self
     }
-    pub fn set_server_field_name(mut self, server_field_name: String) -> Self {
-        self.server_field_name = Some(server_field_name);
+    pub fn set_field_name(mut self, field_name: String) -> Self {
+        self.field_name = Some(field_name);
         self
     }
-    pub fn set_server_field_type(mut self, server_field_type: String) -> Self {
-        self.server_field_type = Some(server_field_type);
+    pub fn set_field_type(mut self, field_type: String) -> Self {
+        self.field_type = Some(field_type);
         self
     }
     pub fn set_comment(mut self, comment: String) -> Self {
@@ -44,15 +45,15 @@ impl ConfigHeaderBuilder {
     pub fn build(self) -> ConfigHeader {
         ConfigHeader {
             index: self.index.unwrap_or_default(),
-            server_field_name: self.server_field_name.unwrap_or_default(),
-            server_field_type: self.server_field_type.unwrap_or_default(),
+            field_name: self.field_name.unwrap_or_default(),
+            field_type: self.field_type.unwrap_or_default(),
             comment: self.comment.unwrap_or_default(),
         }
     }
 }
 
 // config column unit
-#[derive(Default,Debug)]
+#[derive(Default, Debug)]
 pub struct ConfigColumn {
     header: ConfigHeader,
     value: String,
@@ -97,7 +98,7 @@ impl ConfigColumnBuilder {
 }
 
 // config row
-#[derive(Default,Debug)]
+#[derive(Default, Debug)]
 pub struct ConfigRow {
     row_index: i32,
     data: Vec<ConfigColumn>,
@@ -135,16 +136,16 @@ impl ConfigRowBuilder {
 }
 
 // whole config data
-#[derive(Default,Debug)]
+#[derive(Default, Debug)]
 pub struct ConfigTable {
-    name: String,
-    data: Vec<ConfigRow>,
-    header: Vec<ConfigHeader>,
+    pub name: String,
+    pub data: Vec<Vec<DataType>>,
+    pub header: Vec<ConfigHeader>,
 }
 
 pub struct ConfigTableBuilder {
     name: Option<String>,
-    data: Option<Vec<ConfigRow>>,
+    data: Option<Vec<Vec<DataType>>>,
     header: Option<Vec<ConfigHeader>>,
 }
 
@@ -156,8 +157,18 @@ impl ConfigTableBuilder {
             header: None,
         }
     }
-    pub fn set_name(mut self, name: String) -> Self {
+    pub fn set_name(&mut self, name: String) -> &Self {
         self.name = Some(name);
+        self
+    }
+
+    pub fn add_header(&mut self, hb: ConfigHeaderBuilder) -> &Self {
+        self.header.get_or_insert_with(|| Vec::new()).push(hb.build());
+        self
+    }
+
+    pub fn add_data(&mut self, row: Vec<DataType>) -> &Self {
+        self.data.get_or_insert_with(|| Vec::new()).push(row);
         self
     }
 }
