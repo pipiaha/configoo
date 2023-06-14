@@ -1,4 +1,5 @@
 use std::fmt::{Display, Formatter};
+
 use calamine::DataType;
 
 // config header cell unit
@@ -139,12 +140,14 @@ impl ConfigRowBuilder {
 #[derive(Default, Debug)]
 pub struct ConfigTable {
     pub name: String,
+    pub sheet_name: String,
     pub data: Vec<Vec<DataType>>,
     pub header: Vec<ConfigHeader>,
 }
 
 pub struct ConfigTableBuilder {
     name: Option<String>,
+    sheet_name: Option<String>,
     data: Option<Vec<Vec<DataType>>>,
     header: Option<Vec<ConfigHeader>>,
 }
@@ -153,12 +156,18 @@ impl ConfigTableBuilder {
     pub fn new() -> ConfigTableBuilder {
         ConfigTableBuilder {
             name: None,
+            sheet_name: None,
             data: None,
             header: None,
         }
     }
     pub fn set_name(&mut self, name: String) -> &Self {
         self.name = Some(name);
+        self
+    }
+
+    pub fn set_sheet_name(&mut self, sheet_name: String) -> &Self {
+        self.sheet_name = Some(sheet_name);
         self
     }
 
@@ -170,5 +179,9 @@ impl ConfigTableBuilder {
     pub fn add_data(&mut self, row: Vec<DataType>) -> &Self {
         self.data.get_or_insert_with(|| Vec::new()).push(row);
         self
+    }
+
+    pub fn build(&self) -> ConfigTable {
+        self.build()
     }
 }
