@@ -1,18 +1,25 @@
 // use office::Excel;
 
-use std::env;
-use std::error::Error;
+use std::{env, fs, io};
+use std::fmt::{Display, Formatter};
 use std::fs::File;
-use std::ops::Not;
+use std::io::{BufReader, ErrorKind};
 use std::path::Path;
 
 use calamine::{open_workbook, RangeDeserializerBuilder, Reader, Xlsx};
-use crate::context::func::ConfigExporter;
+
+// use crate::args::BuildArgs;
+use crate::context::func::{ConfigExporter, ConfigLoader};
 use crate::context::model::{ConfigHeaderBuilder, ConfigTable, ConfigTableBuilder};
-use crate::export::exporter::CsvExporter;
+use crate::export::config::CsvExporter;
+use crate::import::importer::XlsxConfigLoader;
 
 mod context;
 mod export;
+mod import;
+// mod args;
+mod lang;
+mod args;
 
 fn main() {
     // let args = env::args();
@@ -22,7 +29,15 @@ fn main() {
     // for row in r.rows() {
     //     println!("row={:?}, row[0]={:?}", row, row[0]);
     // }
-    let file_path = Path::new("config/RhythmMasterConfig.xlsx");
+    let dir = "config";
+    //
+    // let args = BuildArgs {};
+
+    let loader = XlsxConfigLoader::new();
+    loader.load(, dir, |tb| {});
+
+    let path = format!("{}/{}", dir, "RhythmMasterConfig.xlsx");
+    let file_path = Path::new(path.as_str());
     // 打开 XLSX 文件
     let mut workbook: Xlsx<_> = match open_workbook(file_path) {
         Ok(wb) => wb,
@@ -92,7 +107,7 @@ fn main() {
     }
 
     //  export
-    let c = CsvExporter {};
+    let c = CsvExporter::new();
     c.export_with_default_dir(&ConfigTable {
         name: "test.csv".to_string(),
         data,
@@ -113,31 +128,5 @@ fn main() {
         }
     }
     // client side code
-
-
-    let header = ConfigHeaderBuilder::new()
-        .set_index(1234)
-        .set_comment(String::from("comment"))
-        .set_field_name(String::from("nnn"))
-        .set_field_type(String::from("ttt"))
-        .build();
-    println!("{:?}", header);
 }
 
-// fn example() -> Result<(), Error> {
-//     let path = format!("{}/tests/temperature.xlsx", env!("CARGO_MANIFEST_DIR"));
-//     let mut workbook: Xlsx<_> = open_workbook(path)?;
-//     let range = workbook.worksheet_range("Sheet1")
-//         .ok_or(Error::Msg("Cannot find 'Sheet1'"))??;
-//
-//     let mut iter = RangeDeserializerBuilder::new().from_range(&range)?;
-//
-//     if let Some(result) = iter.next() {
-//         let (label, value): (String, f64) = result?;
-//         assert_eq!(label, "celsius");
-//         assert_eq!(value, 22.2222);
-//         Ok(())
-//     } else {
-//         Err(From::from("expected at least one record but got none"))
-//     }
-// }

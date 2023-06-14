@@ -1,9 +1,10 @@
 use std::error::Error;
+use crate::args::BuildArgs;
 
 use crate::context::model::ConfigTable;
 
 pub trait ConfigLoader {
-    fn load(path: String) -> ConfigTable;
+    fn load(&self, args: &BuildArgs, path: &str, callback: fn(&ConfigTable));
 }
 
 pub trait ConfigExporter {
@@ -13,6 +14,6 @@ pub trait ConfigExporter {
     }
 }
 
-pub trait CodeExporter {
-    fn gen(&self, dir: &str, t: &ConfigTable) -> Result<bool, dyn Error>;
+pub trait LangExporter {
+    fn gen(&self, dir: &str, t: &ConfigTable) -> Result<bool, &str>;
 }

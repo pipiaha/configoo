@@ -6,6 +6,12 @@ use crate::context::model::ConfigTable;
 
 pub struct CsvExporter {}
 
+impl CsvExporter {
+    pub fn new() -> CsvExporter {
+        CsvExporter {}
+    }
+}
+
 impl ConfigExporter for CsvExporter {
     fn export(&self, dir: &str, t: &ConfigTable) -> bool {
         let mut writer = csv::Writer::from_path(&t.name).unwrap();
@@ -19,6 +25,6 @@ impl ConfigExporter for CsvExporter {
     }
 }
 
-pub struct JsonExporter{}
+pub struct JsonExporter {}
 
-pub struct SqlExporter{}
+pub struct SqlExporter {}

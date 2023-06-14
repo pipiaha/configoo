@@ -1,4 +1,4 @@
-enum Lang{
+pub enum Lang{
     Java,
     CSharp,
     Go,
