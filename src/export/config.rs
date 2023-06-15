@@ -1,14 +1,13 @@
 use std::fs;
-use std::ops::Not;
 use std::path::Path;
-use calamine::DataType;
-use calamine::DataType::String;
-use crate::args::{BuildArgs, ConfigExportFileType, ExportFileNaming, LoadMode};
 
+use crate::args::{BuildArgs, ConfigExportFileType, LoadMode};
 use crate::context::func::ConfigExporter;
 use crate::context::model::ConfigTable;
 
 pub struct CsvExporter {}
+
+// TODO 需要Export总入口
 
 impl CsvExporter {
     pub fn new() -> CsvExporter {
@@ -26,14 +25,27 @@ impl ConfigExporter for CsvExporter {
         if !dir.exists() {
             match fs::create_dir(dir) {
                 Ok(_) => {}
-                Err(err) => { eprintln!("Error export config {},{}", t.name, t.sheet_name) }
+                Err(err) => {
+                    eprintln!("Error export config {},{}.{}", t.name, t.sheet_name, err)
+                }
             };
         }
-        let filename = args.lang_export.naming.gen_config_name(t.name.replace(".xlsx", "").as_str(), sheet_name, ConfigExportFileType::Csv);
+        let filename = args.lang_export.naming.gen_config_name(
+            t.name.replace(".xlsx", "").as_str(),
+            sheet_name,
+            ConfigExportFileType::Csv,
+        );
         let path = format!("{}/{}", args.lang_export.out_dir, filename);
         let mut writer = csv::Writer::from_path(path).unwrap();
         for d in &t.data {
-            writer.write_record(d.iter().map(|v| v.as_string().unwrap_or_default()).collect::<Vec<_>>().as_slice()).unwrap();
+            writer
+                .write_record(
+                    d.iter()
+                        .map(|v| v.as_string().unwrap_or_default())
+                        .collect::<Vec<_>>()
+                        .as_slice(),
+                )
+                .unwrap();
         }
         match writer.flush() {
             Ok(_) => true,

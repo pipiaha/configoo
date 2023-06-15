@@ -11,5 +11,5 @@ public class {{name}} {
    * {{f.comment}}
    */
    private {{f.type}} {{f.name}};
-   {% end for %}
+   {% endfor %}
 }

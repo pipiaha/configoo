@@ -3,6 +3,6 @@ package {{pkg}}
 type {{name}} struct {
     cfg.BaseCfg
     {% for f in fields %}
-    {{f.name}}: {{f.type}} // {{f.comment}}
-    {% end for %}
+    {{f.field_name}}: {{f.field_type}} // {{f.field_comment}}
+    {% endfor %}
 }

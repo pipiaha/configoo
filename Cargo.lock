@@ -161,6 +161,8 @@ dependencies = [
  "calamine",
  "csv",
  "rust-embed",
+ "serde",
+ "serde_json",
  "tera",
 ]
 

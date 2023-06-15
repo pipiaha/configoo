@@ -9,6 +9,8 @@ use crate::lang::Lang;
 struct TemplateAsset;
 
 pub fn get_template(lang: Lang) -> Option<rust_embed::EmbeddedFile> {
-    // assert!(lang.to_string().len() > 0);
+    if lang.to_string().len() <= 0 {
+        return None;
+    }
     TemplateAsset::get(format!("{}.template", lang.to_string()).as_str())
 }

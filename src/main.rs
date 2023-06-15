@@ -1,15 +1,9 @@
-use std::{env, fs, io};
-use std::fmt::{Display, Formatter};
-use std::fs::File;
-use std::io::{BufReader, ErrorKind};
-use std::path::Path;
-
-use calamine::{open_workbook, RangeDeserializerBuilder, Reader, Xlsx};
+use tera::{Context, Tera};
 
 use crate::args::{BuildArgs, BuildMode, LinePattern, LoadMode};
 use crate::context::func::{ConfigExporter, ConfigLoader};
-use crate::context::model::{ConfigHeaderBuilder, ConfigTable, ConfigTableBuilder};
 use crate::export::config::CsvExporter;
+use crate::export::lang::{LangFieldData, LangTemplateData};
 use crate::import::importer::XlsxConfigLoader;
 use crate::lang::Lang;
 
@@ -24,7 +18,22 @@ fn main() {
     // test template
     let f = embed::assets::get_template(Lang::Go).unwrap();
     let s = std::str::from_utf8(f.data.as_ref()).unwrap();
-    println!("{}",s);
+    let mut tera = Tera::default();
+    tera.add_raw_template("test", s).unwrap();
+
+    let data = LangTemplateData{
+        pkg: "abcdefg".to_string(),
+        name: "ABAB".to_string(),
+        fields: vec![LangFieldData{
+            field_name: "f1".to_string(),
+            field_type: "string".to_string(),
+            field_comment: "ayyyy".to_string(),
+        }],
+    };
+    let mut ctx = Context::from_serialize(data).unwrap();
+    ctx.insert("obj", "abcd");
+    let r = tera.render("test", &ctx);
+    println!("{}", r.unwrap());
     // let args = env::args();
     println!("Hello, world!");
     // let mut excel = Excel::open("config/file.xlsx").unwrap();
@@ -48,29 +57,29 @@ fn main() {
         comment_pattern: LinePattern {
             name: "comment".to_string(),
             line_no: 0,
-            extractor: Default::default(),
+            extractor: |s| s.to_string(),// TODO 预定义
         },
         type_pattern: LinePattern {
             name: "type".to_string(),
             line_no: 2,
-            extractor: Default::default(),
+            extractor: |s| s.to_string(),
         },
         name_pattern: LinePattern {
             name: "name".to_string(),
             line_no: 1,
-            extractor: Default::default(),
+            extractor: |s| s.to_string(),
         },
         mode_pattern: LinePattern {
             name: "mode".to_string(),
             line_no: 3,
-            extractor: Default::default(),
+            extractor: |s| s.to_string(),
         },
         config_export: Default::default(),
         lang_export: Default::default(),
     };
     loader.load(args, dir, |tb| {
         println!("load table: {}-{}", tb.name, tb.sheet_name);
-        c.export(args, tb);
+        // c.export(args, tb);
     });
 
     println!("load complete");

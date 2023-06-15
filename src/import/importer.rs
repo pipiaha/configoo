@@ -1,10 +1,9 @@
 use std::{fs, io};
-use std::arch::x86_64::_mm256_undefined_pd;
 use std::fs::File;
-use std::io::{BufReader, Error, ErrorKind};
+use std::io::{BufReader, ErrorKind};
 use std::path::Path;
 
-use calamine::{DataType, open_workbook, Range, Reader, Xlsx, XlsxError};
+use calamine::{DataType, open_workbook, Range, Reader, Xlsx};
 
 use crate::args::{BuildArgs, LoadMode};
 use crate::context::func::ConfigLoader;
@@ -19,29 +18,35 @@ impl XlsxConfigLoader {
 }
 
 impl ConfigLoader for XlsxConfigLoader {
+    /// 加载`path`目录下的所有excel工作表或者`path`指定的工作表文件，并通过`callback`依次消费。
+    ///
+    /// path可以是目录或excel文件路径
     fn load<Func>(&self, args: &BuildArgs, path: &str, callback: Func) where Func: Fn(&ConfigTable) {
         let p = Path::new(args.path.as_str());
 
         let xlsx_list: Vec<Option<(String, Xlsx<_>)>>;
         if p.is_dir() {
-            if let Ok(entries) = fs::read_dir(path) {
-                xlsx_list = entries.map(|entry| {
-                    let wb = match entry.map(|e| {
-                        e.file_name().to_string_lossy().to_string()
-                    }).and_then(|filename| {
-                        load_xlsx(path, filename.as_str()).ok_or(io::Error::from(ErrorKind::NotFound))
-                    }) {
-                        Ok(wb) => { Some(wb) }
-                        Err(err) => {
-                            eprintln!("Error load xlsx file {}", err);
-                            None
+            xlsx_list = match fs::read_dir(path) {
+                Ok(entries) => {
+                    entries.map(|entry| {
+                        match entry.map(|e| {
+                            e.file_name().to_string_lossy().to_string()
+                        }).and_then(|filename| {
+                            load_xlsx(path, filename.as_str()).ok_or(io::Error::from(ErrorKind::NotFound))
+                        }) {
+                            Ok(wb) => { Some(wb) }
+                            Err(err) => {
+                                eprintln!("Error load xlsx file {}", err);
+                                None
+                            }
                         }
-                    };
-                    wb
-                }).collect();
-            } else {
-                xlsx_list = vec![]
-            }
+                    }).collect()
+                }
+                Err(err) => {
+                    eprintln!("Error read dir {}.{}", p.to_string_lossy(), err);
+                    vec![]
+                }
+            };
         } else {
             let wb = load_xlsx(".", path);
             xlsx_list = vec![wb];
@@ -49,25 +54,16 @@ impl ConfigLoader for XlsxConfigLoader {
         xlsx_list.into_iter()
             .filter(|o| o.is_some())
             .map(|o| o.unwrap())
-            // TODO flat_map sheet
-            // .map(|t| {
-            //     t.1.sheet_names().to_vec().iter().for_each(|s| {
-            //         println!("sheet: {}", s);
-            //     });
-            //
-            //     // let mut string = t.1.sheet_names().clone();
-            //     let table = ConfigTableBuilder::new()
-            //         // TODO filling fields
-            //         .set_name(t.0)
-            //         // .set_sheet_name(string[0].clone())
-            //         .build();
-            //     Box::new(table)
-            // })
             .flat_map(|t| load_config_table(args, t.0.as_str(), t.1))
             .for_each(|t| callback(&t));
     }
 }
 
+/// 读取[dir]目录下的[filename]文件.
+///
+/// 文件需要是`xlsx`或者`xls`格式，忽略`~$`开头的临时文件。
+///
+/// 返回文件名和文件组成的元组[Option]
 fn load_xlsx(dir: &str, filename: &str) -> Option<(String, Xlsx<BufReader<File>>)> {
     if filename.starts_with("~$") {
         return None;
@@ -90,6 +86,8 @@ fn load_xlsx(dir: &str, filename: &str) -> Option<(String, Xlsx<BufReader<File>>
     }
 }
 
+/// 转换excel文件为[ConfigTable]，文件内每个`sheet`将对应一个[ConfigTable]。
+///
 fn load_config_table(args: &BuildArgs, filename: &str, mut workbook: Xlsx<BufReader<File>>) -> Vec<ConfigTable> {
     let sheets = workbook.worksheets();
     match args.load {
@@ -99,6 +97,7 @@ fn load_config_table(args: &BuildArgs, filename: &str, mut workbook: Xlsx<BufRea
     }
 }
 
+/// 转换一个excel文件工作簿(sheet)为[ConfigTable]
 fn build_table(args: &BuildArgs, filename: &str, sheet_tuple: (String, Range<DataType>)) -> ConfigTable {
     let mut builder = ConfigTableBuilder::new().set_sheet_name(sheet_tuple.0).set_name(String::from(filename));
     let mut index = 0;

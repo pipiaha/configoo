@@ -1,5 +1,3 @@
-use std::fmt::{Display, Formatter};
-
 use calamine::DataType;
 
 // config header cell unit
