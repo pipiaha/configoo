@@ -4,14 +4,11 @@ use crate::args::BuildArgs;
 use crate::context::model::ConfigTable;
 
 pub trait ConfigLoader {
-    fn load(&self, args: &BuildArgs, path: &str, callback: fn(&ConfigTable));
+    fn load<Func>(&self, args: &BuildArgs, path: &str, callback: Func) where Func: Fn(&ConfigTable);
 }
 
 pub trait ConfigExporter {
-    fn export(&self, dir: &str, t: &ConfigTable) -> bool;
-    fn export_with_default_dir(&self, t: &ConfigTable) -> bool {
-        self.export(".", t)
-    }
+    fn export(&self, args: &BuildArgs, t: &ConfigTable) -> bool;
 }
 
 pub trait LangExporter {

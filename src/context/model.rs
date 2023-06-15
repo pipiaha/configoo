@@ -161,27 +161,32 @@ impl ConfigTableBuilder {
             header: None,
         }
     }
-    pub fn set_name(&mut self, name: String) -> &Self {
+    pub fn set_name(mut self, name: String) -> Self {
         self.name = Some(name);
         self
     }
 
-    pub fn set_sheet_name(&mut self, sheet_name: String) -> &Self {
+    pub fn set_sheet_name(mut self, sheet_name: String) -> Self {
         self.sheet_name = Some(sheet_name);
         self
     }
 
-    pub fn add_header(&mut self, hb: ConfigHeaderBuilder) -> &Self {
+    pub fn add_header(mut self, hb: ConfigHeaderBuilder) -> Self {
         self.header.get_or_insert_with(|| Vec::new()).push(hb.build());
         self
     }
 
-    pub fn add_data(&mut self, row: Vec<DataType>) -> &Self {
+    pub fn add_data(mut self, row: Vec<DataType>) -> Self {
         self.data.get_or_insert_with(|| Vec::new()).push(row);
         self
     }
 
-    pub fn build(&self) -> ConfigTable {
-        self.build()
+    pub fn build(self) -> ConfigTable {
+        ConfigTable {
+            name: self.name.unwrap_or_default(),
+            sheet_name: self.sheet_name.unwrap_or_default(),
+            data: self.data.unwrap_or_default(),
+            header: self.header.unwrap_or_default(),
+        }
     }
 }

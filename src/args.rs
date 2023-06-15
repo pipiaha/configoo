@@ -1,47 +1,90 @@
-use calamine::DataType::String;
+use calamine::Error::De;
 use crate::lang::Lang;
 
 #[derive(Default)]
 pub struct BuildArgs {
-    pub side: BuildSide,
+    pub mode: BuildMode,
     pub path: String,
     pub lang: Lang,
+    pub load: LoadMode,
     pub comment_pattern: LinePattern,
     pub type_pattern: LinePattern,
     pub name_pattern: LinePattern,
-    pub side_pattern: LinePattern,
+    pub mode_pattern: LinePattern,
     pub config_export: ExportArgs,
     pub lang_export: ExportArgs,
 }
 
-pub enum BuildSide {
+#[derive(Default)]
+pub enum BuildMode {
+    #[default]
     Server,
     Client,
 }
 
-#[derive(Default)]
-pub struct LinePattern {
-    pub name: str,
-    pub line_no: i32,
-    pub extractor: fn(input: &str) -> &str,
+impl ToString for BuildMode {
+    fn to_string(&self) -> String {
+        match self {
+            BuildMode::Server => { String::from("server") }
+            BuildMode::Client => { String::from("client") }
+        }
+    }
 }
 
+#[derive(Default, PartialEq)]
+pub enum LoadMode {
+    #[default]
+    AllSheets,
+    FirstSheet,
+}
 
-#[derive(Default)]
+pub struct LinePattern {
+    pub name: String,
+    pub line_no: i32,
+    pub extractor: fn(input: &str) -> String,
+}
+
+impl Default for LinePattern {
+    fn default() -> Self {
+        Self {
+            name: Default::default(),
+            line_no: Default::default(),
+            extractor: |t| String::from(t),
+        }
+    }
+}
+
 pub struct ExportArgs {
-    pub out_dir: str,
+    pub out_dir: String,
     pub naming: ExportFileNaming,
 }
 
-#[derive(Default)]
+impl Default for ExportArgs {
+    fn default() -> Self {
+        Self {
+            out_dir: String::from("."),
+            naming: Default::default(),
+        }
+    }
+}
+
 pub struct ExportFileNaming {
-    pub naming: fn(filename: &str, sheet_name: &str) -> &str,
+    pub func: fn(filename: &str, sheet_name: &str) -> String,
     pub file_type: ConfigExportFileType,
+}
+
+impl Default for ExportFileNaming {
+    fn default() -> Self {
+        Self {
+            func: |f, s| format!("{}_{}", f, s),
+            file_type: Default::default(),
+        }
+    }
 }
 
 impl ExportFileNaming {
     pub fn gen_config_name(&self, filename: &str, sheet_name: &str, file_type: ConfigExportFileType) -> String {
-        let name = self.naming(filename, sheet_name);
+        let name = (self.func)(filename, sheet_name);
         let suffix = match file_type {
             ConfigExportFileType::Csv => { "csv" }
             ConfigExportFileType::Sql => { "sql" }
@@ -51,7 +94,7 @@ impl ExportFileNaming {
     }
 
     pub fn gen_lang_name(&self, filename: &str, sheet_name: &str, lang_type: Lang) -> String {
-        let name = self.naming(filename, sheet_name);
+        let name = (self.func)(filename, sheet_name);
         let suffix = match lang_type {
             Lang::Java => { "java" }
             Lang::CSharp => { "cs" }
@@ -63,7 +106,9 @@ impl ExportFileNaming {
     }
 }
 
+#[derive(Default)]
 pub enum ConfigExportFileType {
+    #[default]
     Csv,
     Sql,
     Json,
