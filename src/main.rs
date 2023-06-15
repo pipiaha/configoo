@@ -1,5 +1,3 @@
-// use office::Excel;
-
 use std::{env, fs, io};
 use std::fmt::{Display, Formatter};
 use std::fs::File;
@@ -7,9 +5,8 @@ use std::io::{BufReader, ErrorKind};
 use std::path::Path;
 
 use calamine::{open_workbook, RangeDeserializerBuilder, Reader, Xlsx};
-use crate::args::{BuildArgs, BuildMode, LoadMode};
 
-// use crate::args::BuildArgs;
+use crate::args::{BuildArgs, BuildMode, LinePattern, LoadMode};
 use crate::context::func::{ConfigExporter, ConfigLoader};
 use crate::context::model::{ConfigHeaderBuilder, ConfigTable, ConfigTableBuilder};
 use crate::export::config::CsvExporter;
@@ -19,11 +16,15 @@ use crate::lang::Lang;
 mod context;
 mod export;
 mod import;
-// mod args;
 mod lang;
 mod args;
+mod embed;
 
 fn main() {
+    // test template
+    let f = embed::assets::get_template(Lang::Go).unwrap();
+    let s = std::str::from_utf8(f.data.as_ref()).unwrap();
+    println!("{}",s);
     // let args = env::args();
     println!("Hello, world!");
     // let mut excel = Excel::open("config/file.xlsx").unwrap();
@@ -41,13 +42,29 @@ fn main() {
     let loader = XlsxConfigLoader::new();
     let args = &BuildArgs {
         mode: BuildMode::Server,
-        path: String::from("config"),
+        path: "config".to_string(),
         lang: Lang::Go,
         load: LoadMode::AllSheets,
-        comment_pattern: Default::default(),
-        type_pattern: Default::default(),
-        name_pattern: Default::default(),
-        mode_pattern: Default::default(),
+        comment_pattern: LinePattern {
+            name: "comment".to_string(),
+            line_no: 0,
+            extractor: Default::default(),
+        },
+        type_pattern: LinePattern {
+            name: "type".to_string(),
+            line_no: 2,
+            extractor: Default::default(),
+        },
+        name_pattern: LinePattern {
+            name: "name".to_string(),
+            line_no: 1,
+            extractor: Default::default(),
+        },
+        mode_pattern: LinePattern {
+            name: "mode".to_string(),
+            line_no: 3,
+            extractor: Default::default(),
+        },
         config_export: Default::default(),
         lang_export: Default::default(),
     };

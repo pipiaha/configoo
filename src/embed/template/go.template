@@ -1,0 +1,8 @@
+package {{pkg}}
+
+type {{name}} struct {
+    cfg.BaseCfg
+    {% for f in fields %}
+    {{f.name}}: {{f.type}} // {{f.comment}}
+    {% end for %}
+}

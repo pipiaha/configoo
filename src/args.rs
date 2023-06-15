@@ -85,24 +85,17 @@ impl Default for ExportFileNaming {
 impl ExportFileNaming {
     pub fn gen_config_name(&self, filename: &str, sheet_name: &str, file_type: ConfigExportFileType) -> String {
         let name = (self.func)(filename, sheet_name);
-        let suffix = match file_type {
-            ConfigExportFileType::Csv => { "csv" }
-            ConfigExportFileType::Sql => { "sql" }
-            ConfigExportFileType::Json => { "json" }
-        };
-        name + "." + suffix
+        let suffix = file_type.to_string();
+        name + "." + suffix.as_str()
     }
 
     pub fn gen_lang_name(&self, filename: &str, sheet_name: &str, lang_type: Lang) -> String {
         let name = (self.func)(filename, sheet_name);
-        let suffix = match lang_type {
-            Lang::Java => { "java" }
-            Lang::CSharp => { "cs" }
-            Lang::Go => { "go" }
-            Lang::Lua => { "lua" }
-            Lang::Custom => { "custom" }// TODO error
-        };
-        name + "." + suffix
+        let suffix = lang_type.to_string();
+        if suffix.len() > 0 {
+            return name + "." + suffix.as_str();
+        }
+        name
     }
 }
 
@@ -112,4 +105,15 @@ pub enum ConfigExportFileType {
     Csv,
     Sql,
     Json,
+}
+
+impl ToString for ConfigExportFileType {
+    fn to_string(&self) -> String {
+        let typ = match self {
+            ConfigExportFileType::Csv => { "csv" }
+            ConfigExportFileType::Sql => { "sql" }
+            ConfigExportFileType::Json => { "json" }
+        };
+        typ.to_string()
+    }
 }

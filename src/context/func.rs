@@ -12,5 +12,5 @@ pub trait ConfigExporter {
 }
 
 pub trait LangExporter {
-    fn gen(&self, dir: &str, t: &ConfigTable) -> Result<bool, &str>;
+    fn gen(&self, args: &BuildArgs, t: &ConfigTable) -> Option<&str>;
 }
