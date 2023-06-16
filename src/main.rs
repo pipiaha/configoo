@@ -2,8 +2,8 @@ use tera::{Context, Tera};
 
 use crate::args::{BuildArgs, BuildMode, LinePattern, LoadMode};
 use crate::context::func::{ConfigExporter, ConfigLoader};
+use crate::context::model::{LangFieldData, LangTemplateData};
 use crate::export::config::CsvExporter;
-use crate::export::lang::{LangFieldData, LangTemplateData};
 use crate::import::importer::XlsxConfigLoader;
 use crate::lang::Lang;
 
@@ -15,25 +15,6 @@ mod args;
 mod embed;
 
 fn main() {
-    // test template
-    let f = embed::assets::get_template(Lang::Go).unwrap();
-    let s = std::str::from_utf8(f.data.as_ref()).unwrap();
-    let mut tera = Tera::default();
-    tera.add_raw_template("test", s).unwrap();
-
-    let data = LangTemplateData{
-        pkg: "abcdefg".to_string(),
-        name: "ABAB".to_string(),
-        fields: vec![LangFieldData{
-            field_name: "f1".to_string(),
-            field_type: "string".to_string(),
-            field_comment: "ayyyy".to_string(),
-        }],
-    };
-    let mut ctx = Context::from_serialize(data).unwrap();
-    ctx.insert("obj", "abcd");
-    let r = tera.render("test", &ctx);
-    println!("{}", r.unwrap());
     // let args = env::args();
     println!("Hello, world!");
     // let mut excel = Excel::open("config/file.xlsx").unwrap();
@@ -77,9 +58,9 @@ fn main() {
         config_export: Default::default(),
         lang_export: Default::default(),
     };
-    loader.load(args, dir, |tb| {
-        println!("load table: {}-{}", tb.name, tb.sheet_name);
-        // c.export(args, tb);
+    loader.load(args, dir, |ctx| {
+        println!("load table: {}-{}", ctx.tb.name, ctx.tb.sheet_name);
+        c.export(ctx);
     });
 
     println!("load complete");

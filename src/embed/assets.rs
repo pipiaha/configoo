@@ -8,7 +8,7 @@ use crate::lang::Lang;
 #[folder = "src/embed/template"]
 struct TemplateAsset;
 
-pub fn get_template(lang: Lang) -> Option<rust_embed::EmbeddedFile> {
+pub fn get_template(lang: &Lang) -> Option<rust_embed::EmbeddedFile> {
     if lang.to_string().len() <= 0 {
         return None;
     }

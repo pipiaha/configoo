@@ -1,4 +1,20 @@
+use std::fmt::{Display, Formatter};
 use calamine::DataType;
+use serde::{Deserialize, Serialize};
+
+use crate::args::BuildArgs;
+
+#[derive(Debug)]
+pub struct Context<'args, 'tb> {
+    pub args: &'args BuildArgs,
+    pub tb: &'tb ConfigTable,
+}
+
+impl<'args, 'tb> Context<'args, 'tb> {
+    pub fn new(args: &'args BuildArgs, tb: &'tb ConfigTable) -> Context<'args, 'tb> {
+        Self { args, tb }
+    }
+}
 
 // config header cell unit
 #[derive(Default, Debug)]
@@ -51,92 +67,10 @@ impl ConfigHeaderBuilder {
     }
 }
 
-// config column unit
-#[derive(Default, Debug)]
-pub struct ConfigColumn {
-    header: ConfigHeader,
-    value: String,
-    row_index: i32,
-}
-
-pub struct ConfigColumnBuilder {
-    header: Option<ConfigHeader>,
-    value: Option<String>,
-    row_index: Option<i32>,
-}
-
-impl ConfigColumnBuilder {
-    pub fn new() -> Self {
-        Self {
-            header: None,
-            value: None,
-            row_index: None,
-        }
-    }
-
-    pub fn set_header(mut self, header: ConfigHeader) -> Self {
-        self.header = Some(header);
-        self
-    }
-    pub fn set_value(mut self, value: String) -> Self {
-        self.value = Some(value);
-        self
-    }
-    pub fn set_row_index(mut self, row_index: i32) -> Self {
-        self.row_index = Some(row_index);
-        self
-    }
-
-    pub fn build(self) -> ConfigColumn {
-        ConfigColumn {
-            header: self.header.unwrap_or_default(),
-            value: self.value.unwrap_or_default(),
-            row_index: self.row_index.unwrap_or_default(),
-        }
-    }
-}
-
-// config row
-#[derive(Default, Debug)]
-pub struct ConfigRow {
-    row_index: i32,
-    data: Vec<ConfigColumn>,
-}
-
-pub struct ConfigRowBuilder {
-    row_index: Option<i32>,
-    data: Option<Vec<ConfigColumn>>,
-}
-
-impl ConfigRowBuilder {
-    pub fn new() -> ConfigRowBuilder {
-        return ConfigRowBuilder {
-            row_index: None,
-            data: None,
-        };
-    }
-
-    pub fn set_row_index(mut self, idx: i32) -> Self {
-        self.row_index = Some(idx);
-        self
-    }
-
-    pub fn add_column(mut self, col: ConfigColumn) -> Self {
-        self.data.get_or_insert_with(Vec::new).push(col);
-        self
-    }
-
-    pub fn build(self) -> ConfigRow {
-        ConfigRow {
-            row_index: self.row_index.unwrap_or_default(),
-            data: self.data.unwrap_or_default(),
-        }
-    }
-}
-
 // whole config data
 #[derive(Default, Debug)]
 pub struct ConfigTable {
+    pub pkg: String,
     pub name: String,
     pub sheet_name: String,
     pub data: Vec<Vec<DataType>>,
@@ -144,6 +78,7 @@ pub struct ConfigTable {
 }
 
 pub struct ConfigTableBuilder {
+    pkg: Option<String>,
     name: Option<String>,
     sheet_name: Option<String>,
     data: Option<Vec<Vec<DataType>>>,
@@ -153,12 +88,19 @@ pub struct ConfigTableBuilder {
 impl ConfigTableBuilder {
     pub fn new() -> ConfigTableBuilder {
         ConfigTableBuilder {
+            pkg: None,
             name: None,
             sheet_name: None,
             data: None,
             header: None,
         }
     }
+
+    pub fn set_pkg(mut self, pkg: String) -> Self {
+        self.pkg = Some(pkg);
+        self
+    }
+
     pub fn set_name(mut self, name: String) -> Self {
         self.name = Some(name);
         self
@@ -181,10 +123,43 @@ impl ConfigTableBuilder {
 
     pub fn build(self) -> ConfigTable {
         ConfigTable {
+            pkg: self.pkg.unwrap_or_default(),
             name: self.name.unwrap_or_default(),
             sheet_name: self.sheet_name.unwrap_or_default(),
             data: self.data.unwrap_or_default(),
             header: self.header.unwrap_or_default(),
         }
     }
+}
+
+// 导出文件参数
+pub struct ConfigData {
+    pub filename: String,
+    pub out_dir: String,
+    pub content: String,
+}
+
+// 模板参数
+#[derive(Serialize, Deserialize, Clone)]
+pub struct LangTemplateData {
+    pub pkg: String,
+    pub name: String,
+    pub fields: Vec<LangFieldData>,
+}
+
+impl LangTemplateData {
+    fn from_table(tb: &ConfigTable) -> LangTemplateData {
+        Self {
+            pkg: tb.pkg.clone(),
+            name: "".to_string(),
+            fields: vec![],
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct LangFieldData {
+    pub field_name: String,
+    pub field_type: String,
+    pub field_comment: String,
 }

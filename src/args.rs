@@ -1,6 +1,7 @@
+use std::fmt::{Debug, Formatter};
 use crate::lang::Lang;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct BuildArgs {
     pub mode: BuildMode,
     pub path: String,
@@ -14,7 +15,7 @@ pub struct BuildArgs {
     pub lang_export: ExportArgs,
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub enum BuildMode {
     #[default]
     Server,
@@ -24,13 +25,13 @@ pub enum BuildMode {
 impl ToString for BuildMode {
     fn to_string(&self) -> String {
         match self {
-            BuildMode::Server => { String::from("server") }
-            BuildMode::Client => { String::from("client") }
+            BuildMode::Server => { "server".to_string() }
+            BuildMode::Client => { "client".to_string() }
         }
     }
 }
 
-#[derive(Default, PartialEq)]
+#[derive(Default, PartialEq, Debug)]
 pub enum LoadMode {
     #[default]
     AllSheets,
@@ -53,6 +54,12 @@ impl Default for LinePattern {
     }
 }
 
+impl Debug for LinePattern {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "name:{} line_no:{}", self.name, self.line_no)
+    }
+}
+
 pub struct ExportArgs {
     pub out_dir: String,
     pub naming: ExportFileNaming,
@@ -67,6 +74,13 @@ impl Default for ExportArgs {
     }
 }
 
+impl Debug for ExportArgs {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "out_dir:{}", self.out_dir)
+    }
+}
+
+#[derive(Debug)]
 pub struct ExportFileNaming {
     pub func: fn(filename: &str, sheet_name: &str) -> String,
     pub file_type: ConfigExportFileType,
@@ -98,7 +112,7 @@ impl ExportFileNaming {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub enum ConfigExportFileType {
     #[default]
     Csv,

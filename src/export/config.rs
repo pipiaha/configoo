@@ -3,7 +3,7 @@ use std::path::Path;
 
 use crate::args::{BuildArgs, ConfigExportFileType, LoadMode};
 use crate::context::func::ConfigExporter;
-use crate::context::model::ConfigTable;
+use crate::context::model::{ConfigTable, Context};
 
 pub struct CsvExporter {}
 
@@ -16,8 +16,10 @@ impl CsvExporter {
 }
 
 impl ConfigExporter for CsvExporter {
-    fn export(&self, args: &BuildArgs, t: &ConfigTable) -> bool {
+    fn export(&self, ctx: &Context) -> bool {
         let mut sheet_name = "";
+        let t = ctx.tb;
+        let args = ctx.args;
         if args.load == LoadMode::AllSheets {
             sheet_name = t.sheet_name.as_str();
         }
@@ -38,14 +40,12 @@ impl ConfigExporter for CsvExporter {
         let path = format!("{}/{}", args.lang_export.out_dir, filename);
         let mut writer = csv::Writer::from_path(path).unwrap();
         for d in &t.data {
-            writer
-                .write_record(
-                    d.iter()
-                        .map(|v| v.as_string().unwrap_or_default())
-                        .collect::<Vec<_>>()
-                        .as_slice(),
-                )
-                .unwrap();
+            writer.write_record(
+                d.iter()
+                    .map(|v| v.as_string().unwrap_or_default())
+                    .collect::<Vec<_>>()
+                    .as_slice(),
+            ).unwrap();
         }
         match writer.flush() {
             Ok(_) => true,

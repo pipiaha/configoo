@@ -7,7 +7,7 @@ use calamine::{DataType, open_workbook, Range, Reader, Xlsx};
 
 use crate::args::{BuildArgs, LoadMode};
 use crate::context::func::ConfigLoader;
-use crate::context::model::{ConfigHeaderBuilder, ConfigTable, ConfigTableBuilder};
+use crate::context::model::{ConfigHeaderBuilder, ConfigTable, ConfigTableBuilder, Context};
 
 pub struct XlsxConfigLoader {}
 
@@ -21,7 +21,7 @@ impl ConfigLoader for XlsxConfigLoader {
     /// 加载`path`目录下的所有excel工作表或者`path`指定的工作表文件，并通过`callback`依次消费。
     ///
     /// path可以是目录或excel文件路径
-    fn load<Func>(&self, args: &BuildArgs, path: &str, callback: Func) where Func: Fn(&ConfigTable) {
+    fn load<Func>(&self, args: &BuildArgs, path: &str, callback: Func) where Func: Fn(&Context) {
         let p = Path::new(args.path.as_str());
 
         let xlsx_list: Vec<Option<(String, Xlsx<_>)>>;
@@ -51,11 +51,15 @@ impl ConfigLoader for XlsxConfigLoader {
             let wb = load_xlsx(".", path);
             xlsx_list = vec![wb];
         }
+
         xlsx_list.into_iter()
             .filter(|o| o.is_some())
             .map(|o| o.unwrap())
             .flat_map(|t| load_config_table(args, t.0.as_str(), t.1))
-            .for_each(|t| callback(&t));
+            .for_each(|t| {
+                let ctx = Context::new(&args, &t);
+                callback(&ctx)
+            });
     }
 }
 

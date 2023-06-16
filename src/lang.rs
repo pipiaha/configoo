@@ -1,5 +1,4 @@
-
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub enum Lang {
     Java,
     CSharp,
