@@ -1,5 +1,9 @@
 package {{pkg}}
 
+{% for i in imports %}
+import {{i}};
+{% endfor %}
+
 type {{name}} struct {
     cfg.BaseCfg
     {% for f in fields %}

@@ -28,11 +28,11 @@ fn main() {
     // let args = BuildArgs {};
 
     // config exporter
-    let c = CsvExporter::new();
+    let cfg_exp = CsvExporter::new();
     // TODO go 源文件设置
-    let mut lang = BaseLangExporter::wrap(Box::new(BaseLangWriter));
+    let mut lang_exp = BaseLangExporter::wrap(Box::new(BaseLangWriter));
     //
-    lang.add_modifier(|ctx, data| {
+    lang_exp.add_modifier(|ctx, data| {
         data.pkg = "test/123".to_string();
         data.name = "Test".to_string();
         data.imports.push("import \"github.com/abcd\"".to_string());
@@ -74,8 +74,8 @@ fn main() {
     };
     loader.load(args, dir, |ctx| {
         println!("load table: {}-{}", ctx.tb.name, ctx.tb.sheet_name);
-        c.export(ctx);
-        lang.gen(ctx);
+        cfg_exp.export(ctx);
+        lang_exp.gen(ctx);
     });
 
     println!("load complete");

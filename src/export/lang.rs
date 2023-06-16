@@ -80,13 +80,3 @@ impl LangExporter for BaseLangWriter {
         Some("")
     }
 }
-
-pub struct GolangExporter {
-    writer: BaseLangWriter,
-}
-
-impl LangExporter for GolangExporter {
-    fn gen(&self, ctx: &Context, data: &LangTemplateData, src: &str) -> Option<&str> {
-        self.writer.gen(ctx, data, src)
-    }
-}

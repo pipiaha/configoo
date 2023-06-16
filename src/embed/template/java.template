@@ -1,6 +1,9 @@
 package {{pkg}};
 
 import lombok.Data;
+{% for i in imports %}
+import {{i}};
+{% endfor %}
 
 @Data
 public class {{name}} {

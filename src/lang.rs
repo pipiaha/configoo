@@ -28,3 +28,20 @@ impl ToString for Lang {
         typ.to_string()
     }
 }
+
+/// configoo配置表 支持的数据类型
+pub enum Types{
+    Int,
+    Ints,
+    Float,
+    Floats,
+    Double,
+    Doubles,
+    Byte,
+    Bytes,
+    Bool,
+    Bools,
+    String,
+    Strings,
+    Json,
+}
