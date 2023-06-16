@@ -11,7 +11,7 @@ pub trait ConfigExporter {
 }
 
 pub trait LangExporter {
-    fn gen(&self, ctx: &Context, data: &LangTemplateData, src: &str) -> Option<&str>;
+    fn gen(& self, ctx: &Context, data: &LangTemplateData, src: & str) -> Option<&str>;
 }
 
 pub trait LangBuildLifetime {

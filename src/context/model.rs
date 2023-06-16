@@ -1,4 +1,5 @@
 use std::fmt::{Display, Formatter};
+
 use calamine::DataType;
 use serde::{Deserialize, Serialize};
 
@@ -70,7 +71,6 @@ impl ConfigHeaderBuilder {
 // whole config data
 #[derive(Default, Debug)]
 pub struct ConfigTable {
-    pub pkg: String,
     pub name: String,
     pub sheet_name: String,
     pub data: Vec<Vec<DataType>>,
@@ -123,7 +123,6 @@ impl ConfigTableBuilder {
 
     pub fn build(self) -> ConfigTable {
         ConfigTable {
-            pkg: self.pkg.unwrap_or_default(),
             name: self.name.unwrap_or_default(),
             sheet_name: self.sheet_name.unwrap_or_default(),
             data: self.data.unwrap_or_default(),
@@ -142,17 +141,21 @@ pub struct ConfigData {
 // 模板参数
 #[derive(Serialize, Deserialize, Clone)]
 pub struct LangTemplateData {
+    pub filename: String,
     pub pkg: String,
     pub name: String,
     pub fields: Vec<LangFieldData>,
+    pub imports: Vec<String>,
 }
 
 impl LangTemplateData {
     fn from_table(tb: &ConfigTable) -> LangTemplateData {
         Self {
-            pkg: tb.pkg.clone(),
+            filename: tb.name.clone(),
+            pkg: "".to_string(),
             name: "".to_string(),
             fields: vec![],
+            imports: vec![],
         }
     }
 }

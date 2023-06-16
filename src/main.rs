@@ -1,9 +1,10 @@
 use tera::{Context, Tera};
 
 use crate::args::{BuildArgs, BuildMode, LinePattern, LoadMode};
-use crate::context::func::{ConfigExporter, ConfigLoader};
+use crate::context::func::{ConfigExporter, ConfigLoader, LangBuildLifetime, LangTemplateDataModifier};
 use crate::context::model::{LangFieldData, LangTemplateData};
 use crate::export::config::CsvExporter;
+use crate::export::lang::{BaseLangExporter, BaseLangWriter};
 use crate::import::importer::XlsxConfigLoader;
 use crate::lang::Lang;
 
@@ -28,6 +29,19 @@ fn main() {
 
     // config exporter
     let c = CsvExporter::new();
+    // TODO go 源文件设置
+    let mut lang = BaseLangExporter::wrap(Box::new(BaseLangWriter));
+    //
+    lang.add_modifier(|ctx, data| {
+        data.pkg = "test/123".to_string();
+        data.name = "Test".to_string();
+        data.imports.push("import \"github.com/abcd\"".to_string());
+        data.fields.push(LangFieldData {
+            field_name: "Bibi".to_string(),
+            field_type: "didi".to_string(),
+            field_comment: "cici".to_string(),
+        })
+    });
 
     let loader = XlsxConfigLoader::new();
     let args = &BuildArgs {
@@ -61,6 +75,7 @@ fn main() {
     loader.load(args, dir, |ctx| {
         println!("load table: {}-{}", ctx.tb.name, ctx.tb.sheet_name);
         c.export(ctx);
+        lang.gen(ctx);
     });
 
     println!("load complete");

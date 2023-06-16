@@ -1,3 +1,6 @@
+use std::fs;
+use std::path::Path;
+
 use tera::Tera;
 
 use crate::context::func::{LangBuildLifetime, LangExporter, LangTemplateDataModifier};
@@ -36,9 +39,11 @@ impl LangBuildLifetime for BaseLangExporter {
 
     fn gen(&self, ctx: &Context) -> Option<&str> {
         let mut d = LangTemplateData {
+            filename: "".to_string(),
             pkg: "".to_string(),
             name: "".to_string(),
             fields: vec![],
+            imports: vec![],
         };
         self.modify(ctx, &mut d);
         // test template
@@ -51,7 +56,6 @@ impl LangBuildLifetime for BaseLangExporter {
         let mut tera = Tera::default();
         tera.add_raw_template(lang_str, s).unwrap();
         let mut src_ctx = tera::Context::from_serialize(d.clone()).unwrap();
-        src_ctx.insert("obj", "abcd");
         if let Ok(src) = tera.render(lang_str, &src_ctx) {
             println!("{}", src);
             return self.inner.gen(ctx, &d, src.as_str());
@@ -60,21 +64,29 @@ impl LangBuildLifetime for BaseLangExporter {
     }
 }
 
+pub struct BaseLangWriter;
 
-pub struct GolangExporter;
+impl LangExporter for BaseLangWriter {
+    fn gen(&self, ctx: &Context, data: &LangTemplateData, src: &str) -> Option<&str> {
+        let out_dir = &ctx.args.lang_export.out_dir;
+        let dir = Path::new(out_dir);
+        if !dir.exists() {
+            fs::create_dir(dir);
+        }
+        match fs::write(format!("{}/{}.{}", out_dir, ctx.tb.name, ctx.args.lang.to_string()), src) {
+            Ok(_) => {}
+            Err(err) => { eprintln!("Error write file {}.{}", data.name, err) }
+        };
+        Some("")
+    }
+}
+
+pub struct GolangExporter {
+    writer: BaseLangWriter,
+}
 
 impl LangExporter for GolangExporter {
     fn gen(&self, ctx: &Context, data: &LangTemplateData, src: &str) -> Option<&str> {
-        let data = LangTemplateData {
-            pkg: "abcdefg".to_string(),
-            name: "ABAB".to_string(),
-            fields: vec![LangFieldData {
-                field_name: "f1".to_string(),
-                field_type: "string".to_string(),
-                field_comment: "ayyyy".to_string(),
-            }],
-        };
-
-        Some("")
+        self.writer.gen(ctx, data, src)
     }
 }

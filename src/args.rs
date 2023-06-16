@@ -1,4 +1,5 @@
 use std::fmt::{Debug, Formatter};
+
 use crate::lang::Lang;
 
 #[derive(Default, Debug)]
@@ -80,7 +81,6 @@ impl Debug for ExportArgs {
     }
 }
 
-#[derive(Debug)]
 pub struct ExportFileNaming {
     pub func: fn(filename: &str, sheet_name: &str) -> String,
     pub file_type: ConfigExportFileType,
@@ -92,6 +92,12 @@ impl Default for ExportFileNaming {
             func: |f, s| format!("{}_{}", f, s),
             file_type: Default::default(),
         }
+    }
+}
+
+impl Debug for ExportFileNaming {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.file_type.to_string())
     }
 }
 
