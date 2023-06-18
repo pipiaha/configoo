@@ -15,24 +15,20 @@ mod args;
 mod embed;
 
 fn main() {
-    // let args = env::args();
-    // let mut excel = Excel::open("config/file.xlsx").unwrap();
-    // let r = excel.worksheet_range("Sheet1").unwrap();
-    // for row in r.rows() {
-    //     println!("row={:?}, row[0]={:?}", row, row[0]);
-    // }
-    let dir = "config";
-    //
-    // let args = BuildArgs {};
-
     // config exporter
     let cfg_exp = CsvExporter::new();
-    // TODO go 源文件设置
+
+    // lang exporter
     let mut lang_exp = LangExporterBuilder::new()
         .add_modifier(|ctx, data| {
+            let name = ctx.tb.name.replace(".xlsx", "");
+
             data.pkg = ctx.args.pkg.clone();
-            data.name = ctx.args.lang_export.naming.gen_lang_name(ctx.tb.name.as_str(), ctx.tb.sheet_name.as_str(), &ctx.args.lang);
-            data.filename = ctx.tb.name.clone();
+            data.filename = ctx.args.lang_export.naming.gen_lang_name(
+                name.as_str(),
+                ctx.tb.sheet_name.as_str(),
+                &ctx.args.lang);
+            data.name = name.clone();
             // data.imports.push("import \"github.com/abcd\"".to_string());
             ctx.tb.header.iter().for_each(|h| {
                 data.fields.push(LangFieldData {
@@ -43,7 +39,9 @@ fn main() {
             });
         }).build();//BaseLangLifetime::wrap(Box::new(GolangExporter::new()));
 
+    // cfg loader
     let loader = XlsxConfigLoader::new();
+    // build options
     let args = BuildArgs {
         mode: BuildMode::Server,
         path: "config".to_string(),
@@ -73,11 +71,11 @@ fn main() {
         config_export: ExportArgs { out_dir: "gen/cfg".to_string(), naming: Default::default() },
         lang_export: ExportArgs { out_dir: "gen/src".to_string(), naming: Default::default() },
     };
-    loader.load(&args, dir, |ctx| {
-        println!("load table: {}-{}", ctx.tb.name, ctx.tb.sheet_name);
-        cfg_exp.export(ctx);
-        lang_exp.export(ctx);
-    });
+    loader.load(&args, |ctx| {
+            println!("load table: {}/{}", ctx.tb.name, ctx.tb.sheet_name);
+            cfg_exp.export(ctx);
+            lang_exp.export(ctx);
+        });
 
     println!("load complete");
 }

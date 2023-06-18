@@ -9,7 +9,7 @@ use crate::context::model::{ConfigTable, Context, LangTemplateData};
 use crate::embed;
 
 pub trait ConfigLoader {
-    fn load<Func>(&self, args: &BuildArgs, path: &str, callback: Func)
+    fn load<Func>(&self, args: &BuildArgs, callback: Func)
         where Func: Fn(&Context);
 }
 
@@ -109,10 +109,18 @@ impl LangExporterBuilder {
         if !dir.exists() {
             fs::create_dir_all(dir);
         }
-        match fs::write(format!("{}/{}.{}", out_dir, filename, ctx.args.lang.to_string()), src) {
-            Ok(_) => {}
-            Err(err) => { eprintln!("Error write file {}.{}", filename, err) }
-        };
+        let lang = ctx.args.lang.to_string();
+        if filename.ends_with(lang.as_str()) {
+            match fs::write(format!("{}/{}", out_dir, filename), src) {
+                Ok(_) => {}
+                Err(err) => { eprintln!("Error write file {}.{}", filename, err) }
+            };
+        } else {
+            match fs::write(format!("{}/{}.{}", out_dir, filename, lang), src) {
+                Ok(_) => {}
+                Err(err) => { eprintln!("Error write file {}.{}", filename, err) }
+            };
+        }
     }
     pub fn default_load(ctx: &Context) -> (String, String) {
         let lang = &ctx.args.lang;

@@ -9,34 +9,35 @@ use crate::args::{BuildArgs, LoadMode};
 use crate::context::func::ConfigLoader;
 use crate::context::model::{ConfigHeaderBuilder, ConfigTable, ConfigTableBuilder, Context};
 
-pub struct XlsxConfigLoader {}
+pub struct XlsxConfigLoader;
 
 impl XlsxConfigLoader {
     pub fn new() -> XlsxConfigLoader {
-        XlsxConfigLoader {}
+        XlsxConfigLoader
     }
 }
 
 impl ConfigLoader for XlsxConfigLoader {
-    /// 加载`path`目录下的所有excel工作表或者`path`指定的工作表文件，并通过`callback`依次消费。
+    /// 加载`args.path`目录下的所有excel工作表或者`args.path`指定的工作表文件，并通过`callback`依次消费。
     ///
-    /// path可以是目录或excel文件路径 TODO error
-    fn load<Func>(&self, args: &BuildArgs, path: &str, callback: Func) where Func: Fn(&Context) {
-        let p = Path::new(args.path.as_str());
+    /// args.path可以是目录或excel文件路径
+    fn load<Func>(&self, args: &BuildArgs, callback: Func) where Func: Fn(&Context) {
+        let dir_or_file = &args.path;
+        let p = Path::new(dir_or_file.as_str());
 
         let xlsx_list: Vec<Option<(String, Xlsx<_>)>>;
         if p.is_dir() {
-            xlsx_list = match fs::read_dir(path) {
+            xlsx_list = match fs::read_dir(dir_or_file) {
                 Ok(entries) => {
                     entries.map(|entry| {
                         match entry.map(|e| {
                             e.file_name().to_string_lossy().to_string()
                         }).and_then(|filename| {
-                            load_xlsx(path, filename.as_str()).ok_or(io::Error::from(ErrorKind::NotFound))
+                            load_xlsx(dir_or_file, filename.as_str()).ok_or(io::Error::from(ErrorKind::NotFound))
                         }) {
-                            Ok(wb) => { Some(wb) }
+                            Ok(wb) => Some(wb),
                             Err(err) => {
-                                eprintln!("Error load xlsx file {}", err);
+                                // eprintln!("Skip file {}", err);
                                 None
                             }
                         }
@@ -48,7 +49,7 @@ impl ConfigLoader for XlsxConfigLoader {
                 }
             };
         } else {
-            let wb = load_xlsx(".", path);
+            let wb = load_xlsx(".", dir_or_file);
             xlsx_list = vec![wb];
         }
 
