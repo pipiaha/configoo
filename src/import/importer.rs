@@ -20,7 +20,7 @@ impl XlsxConfigLoader {
 impl ConfigLoader for XlsxConfigLoader {
     /// 加载`path`目录下的所有excel工作表或者`path`指定的工作表文件，并通过`callback`依次消费。
     ///
-    /// path可以是目录或excel文件路径
+    /// path可以是目录或excel文件路径 TODO error
     fn load<Func>(&self, args: &BuildArgs, path: &str, callback: Func) where Func: Fn(&Context) {
         let p = Path::new(args.path.as_str());
 
@@ -110,7 +110,7 @@ fn build_table(args: &BuildArgs, filename: &str, sheet_tuple: (String, Range<Dat
     let mut server_names = vec![];
     let mut server_flags = vec![];
     for row in sheet_tuple.1.rows() {
-        println!("row={:?}, row[0]={:?}", row, row[0]);
+        // println!("row={:?}, row[0]={:?}", row, row[0]);
         if index == args.comment_pattern.line_no {
             comments = row.to_vec();
         }

@@ -20,10 +20,10 @@ impl<'args, 'tb> Context<'args, 'tb> {
 // config header cell unit
 #[derive(Default, Debug)]
 pub struct ConfigHeader {
-    index: i32,
-    field_name: String,
-    field_type: String,
-    comment: String,
+    pub index: i32,
+    pub field_name: String,
+    pub field_type: String,
+    pub comment: String,
 }
 
 pub struct ConfigHeaderBuilder {
@@ -78,7 +78,6 @@ pub struct ConfigTable {
 }
 
 pub struct ConfigTableBuilder {
-    pkg: Option<String>,
     name: Option<String>,
     sheet_name: Option<String>,
     data: Option<Vec<Vec<DataType>>>,
@@ -88,17 +87,11 @@ pub struct ConfigTableBuilder {
 impl ConfigTableBuilder {
     pub fn new() -> ConfigTableBuilder {
         ConfigTableBuilder {
-            pkg: None,
             name: None,
             sheet_name: None,
             data: None,
             header: None,
         }
-    }
-
-    pub fn set_pkg(mut self, pkg: String) -> Self {
-        self.pkg = Some(pkg);
-        self
     }
 
     pub fn set_name(mut self, name: String) -> Self {

@@ -2,12 +2,14 @@ use std::fmt::{Debug, Formatter};
 
 use crate::lang::Lang;
 
+// TODO builder
 #[derive(Default, Debug)]
 pub struct BuildArgs {
     pub mode: BuildMode,
     pub path: String,
     pub lang: Lang,
     pub load: LoadMode,
+    pub pkg: String,
     pub comment_pattern: LinePattern,
     pub type_pattern: LinePattern,
     pub name_pattern: LinePattern,
@@ -102,13 +104,13 @@ impl Debug for ExportFileNaming {
 }
 
 impl ExportFileNaming {
-    pub fn gen_config_name(&self, filename: &str, sheet_name: &str, file_type: ConfigExportFileType) -> String {
+    pub fn gen_config_name(&self, filename: &str, sheet_name: &str, file_type: &ConfigExportFileType) -> String {
         let name = (self.func)(filename, sheet_name);
         let suffix = file_type.to_string();
         name + "." + suffix.as_str()
     }
 
-    pub fn gen_lang_name(&self, filename: &str, sheet_name: &str, lang_type: Lang) -> String {
+    pub fn gen_lang_name(&self, filename: &str, sheet_name: &str, lang_type: &Lang) -> String {
         let name = (self.func)(filename, sheet_name);
         let suffix = lang_type.to_string();
         if suffix.len() > 0 {

@@ -23,21 +23,21 @@ impl ConfigExporter for CsvExporter {
         if args.load == LoadMode::AllSheets {
             sheet_name = t.sheet_name.as_str();
         }
-        let dir = Path::new(args.lang_export.out_dir.as_str());
+        let dir = Path::new(args.config_export.out_dir.as_str());
         if !dir.exists() {
-            match fs::create_dir(dir) {
+            match fs::create_dir_all(dir) {
                 Ok(_) => {}
                 Err(err) => {
                     eprintln!("Error export config {},{}.{}", t.name, t.sheet_name, err)
                 }
             };
         }
-        let filename = args.lang_export.naming.gen_config_name(
+        let filename = args.config_export.naming.gen_config_name(
             t.name.replace(".xlsx", "").as_str(),
             sheet_name,
-            ConfigExportFileType::Csv,
+            &ConfigExportFileType::Csv,
         );
-        let path = format!("{}/{}", args.lang_export.out_dir, filename);
+        let path = format!("{}/{}", args.config_export.out_dir, filename);
         let mut writer = csv::Writer::from_path(path).unwrap();
         for d in &t.data {
             writer.write_record(
