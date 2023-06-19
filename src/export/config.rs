@@ -32,7 +32,7 @@ impl ConfigExporter for CsvExporter {
                 }
             };
         }
-        let filename = args.config_export.naming.gen_config_name(
+        let filename = args.config_export.gen_config_name(
             t.name.replace(".xlsx", "").as_str(),
             sheet_name,
             &ConfigExportFileType::Csv,

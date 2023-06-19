@@ -1,6 +1,6 @@
 use tera::{Context, Tera};
 
-use crate::args::{BuildArgs, BuildMode, ExportArgs, LinePattern, LoadMode};
+use crate::args::{BuildArgs, BuildArgsBuilder, BuildMode, ConfigExportFileType, ExportArgs, ExtractArgsBuilder, LinePattern, LinePatternBuilder, LoadMode};
 use crate::context::func::{ConfigExporter, ConfigLoader, LangExporter, LangExporterBuilder, LangTemplateDataModifier};
 use crate::context::model::{LangFieldData, LangTemplateData};
 use crate::export::config::CsvExporter;
@@ -15,6 +15,47 @@ mod args;
 mod embed;
 
 fn main() {
+
+    // cfg loader 目前只支持xlsx
+    let loader = XlsxConfigLoader::new();
+    // build options
+    let args_builder = BuildArgsBuilder::new()
+        .set_build_mode(BuildMode::Server)
+        .set_config_path("config".to_string())
+        .set_lang(Lang::Go)
+        .set_config_load_mode(LoadMode::AllSheets)
+        .set_pkg("cfg".to_string())
+        .set_config_comment_pattern(LinePatternBuilder::new()
+            .set_name("comment".to_string())
+            .set_line_no(0)
+            .set_extractor(BuildArgs::default_lp_extractor)
+            .build())
+        .set_config_name_pattern(LinePatternBuilder::new()
+            .set_name("name".to_string())
+            .set_line_no(1)
+            .set_extractor(BuildArgs::default_lp_extractor)
+            .build())
+        .set_config_type_pattern(LinePatternBuilder::new()
+            .set_name("type".to_string())
+            .set_line_no(1)
+            .set_extractor(BuildArgs::default_lp_extractor)
+            .build())
+        .set_config_mode_pattern(LinePatternBuilder::new()
+            .set_name("mode".to_string())
+            .set_line_no(3)
+            .set_extractor(BuildArgs::default_lp_extractor)
+            .build())
+        .set_config_file_type(ConfigExportFileType::Csv)
+        .set_lang_export(ExtractArgsBuilder::new()
+            .set_out_dir("gen/src".to_string())
+            .set_naming_func(BuildArgs::default_naming_func)
+            .build())
+        .set_config_export(ExtractArgsBuilder::new()
+            .set_out_dir("gen/cfg".to_string())
+            .set_naming_func(BuildArgs::default_naming_func)
+            .build());
+    let args = args_builder.build();
+
     // config exporter
     let cfg_exp = CsvExporter::new();
 
@@ -24,7 +65,7 @@ fn main() {
             let name = ctx.tb.name.replace(".xlsx", "");
 
             data.pkg = ctx.args.pkg.clone();
-            data.filename = ctx.args.lang_export.naming.gen_lang_name(
+            data.filename = ctx.args.lang_export.gen_lang_name(
                 name.as_str(),
                 ctx.tb.sheet_name.as_str(),
                 &ctx.args.lang);
@@ -39,44 +80,12 @@ fn main() {
             });
         }).build();//BaseLangLifetime::wrap(Box::new(GolangExporter::new()));
 
-    // cfg loader
-    let loader = XlsxConfigLoader::new();
-    // build options
-    let args = BuildArgs {
-        mode: BuildMode::Server,
-        path: "config".to_string(),
-        lang: Lang::Go,
-        load: LoadMode::AllSheets,
-        pkg: "cfg".to_string(),
-        comment_pattern: LinePattern {
-            name: "comment".to_string(),
-            line_no: 0,
-            extractor: |s| s.to_string(),// TODO 预定义
-        },
-        type_pattern: LinePattern {
-            name: "type".to_string(),
-            line_no: 2,
-            extractor: |s| s.to_string(),
-        },
-        name_pattern: LinePattern {
-            name: "name".to_string(),
-            line_no: 1,
-            extractor: |s| s.to_string(),
-        },
-        mode_pattern: LinePattern {
-            name: "mode".to_string(),
-            line_no: 3,
-            extractor: |s| s.to_string(),
-        },
-        config_export: ExportArgs { out_dir: "gen/cfg".to_string(), naming: Default::default() },
-        lang_export: ExportArgs { out_dir: "gen/src".to_string(), naming: Default::default() },
-    };
     loader.load(&args, |ctx| {
-            println!("load table: {}/{}", ctx.tb.name, ctx.tb.sheet_name);
-            cfg_exp.export(ctx);
-            lang_exp.export(ctx);
-        });
-
+        println!("load table: {}/{}", ctx.tb.name, ctx.tb.sheet_name);
+        cfg_exp.export(ctx);
+        lang_exp.export(ctx);
+    });
+    
     println!("load complete");
 }
 

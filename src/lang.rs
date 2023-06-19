@@ -1,4 +1,4 @@
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub enum Lang {
     Java,
     CSharp,
@@ -30,7 +30,7 @@ impl ToString for Lang {
 }
 
 /// configoo配置表 支持的数据类型
-pub enum Types{
+pub enum Types {
     Int,
     Ints,
     Float,
