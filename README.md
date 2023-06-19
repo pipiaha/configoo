@@ -18,11 +18,11 @@
 | 生成csv             | ✅      | csv                                                         |
 | 生成go代码            | ✅      |                                                             |
 | 使用模板生成            | ✅      | ~~handlebars/~~[tera](https://tera.netlify.app/docs)        |
-| buildArgs         | 🚧     | 使用builder模式                                                 |
+| buildArgs         | ✅      | 使用builder模式                                                 |
 | csvExporter使用通用入口 | 🚧     | 统一导出流程，拆分构建步骤并支持自定义;完成sql/json模式                            |
 | 自定义代码生成           | 🚧     | 自定义外部模板加载；自定义语言支持；自定义模板参数modify；自定义writer                   |
 | 自定义配置导出           | 🚧     | 自定义参数modify;自定义writer;(参考LangExporter)                      |
-| prompt终端          | 🚧     | clap                                                        |
+| 终端                | 🚧     | clap                                                        |
 | ui终端              | -      | vue3+ElementPlus                                            |
 | tauri插件集成桌面版      | -      |                                                             |
 | 自定义模式             | -      | 使用拦截器+管道流处理；自定义代码模板；自定义文件输出；自定义命名规则；自定义输出路径；                |
