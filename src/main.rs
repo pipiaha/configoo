@@ -1,9 +1,10 @@
 use tera::{Context, Tera};
 
 use crate::args::{BuildArgs, BuildArgsBuilder, BuildMode, ConfigExportFileType, ExportArgs, ExtractArgsBuilder, LinePattern, LinePatternBuilder, LoadMode};
-use crate::context::func::{ConfigExporter, ConfigLoader, LangExporter, LangExporterBuilder, LangTemplateDataModifier};
+use crate::context::func::{ConfigExporter, ConfigLoader, LangExporter, LangExporterBuilder, LangExporterBuilderCustomizer, LangTemplateDataModifier};
 use crate::context::model::{LangFieldData, LangTemplateData};
 use crate::export::config::CsvExporter;
+use crate::export::lang_go::GolangExporter;
 use crate::import::importer::XlsxConfigLoader;
 use crate::lang::Lang;
 
@@ -60,32 +61,16 @@ fn main() {
     let cfg_exp = CsvExporter::new();
 
     // lang exporter
-    let mut lang_exp = LangExporterBuilder::new()
-        .add_modifier(|ctx, data| {
-            let name = ctx.tb.name.replace(".xlsx", "");
-
-            data.pkg = ctx.args.pkg.clone();
-            data.filename = ctx.args.lang_export.gen_lang_name(
-                name.as_str(),
-                ctx.tb.sheet_name.as_str(),
-                &ctx.args.lang);
-            data.name = name.clone();
-            // data.imports.push("import \"github.com/abcd\"".to_string());
-            ctx.tb.header.iter().for_each(|h| {
-                data.fields.push(LangFieldData {
-                    field_name: h.field_name.clone(),
-                    field_type: h.field_type.clone(),
-                    field_comment: h.comment.clone(),
-                });
-            });
-        }).build();//BaseLangLifetime::wrap(Box::new(GolangExporter::new()));
+    let mut builder = LangExporterBuilder::new();
+    GolangExporter::default().apply(&mut builder);
+    let mut lang_exp = builder.build();
 
     loader.load(&args, |ctx| {
         println!("load table: {}/{}", ctx.tb.name, ctx.tb.sheet_name);
         cfg_exp.export(ctx);
         lang_exp.export(ctx);
     });
-    
+
     println!("load complete");
 }
 

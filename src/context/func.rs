@@ -84,15 +84,15 @@ impl LangExporterBuilder {
             writer: None,
         }
     }
-    pub fn add_modifier(mut self, modifier: LangTemplateDataModifier) -> Self {
+    pub fn add_modifier(&mut self, modifier: LangTemplateDataModifier) -> &mut Self {
         self.modifiers.get_or_insert_with(|| Vec::new()).push(modifier);
         self
     }
-    pub fn add_writer(mut self, writer: LangWriter) -> Self {
+    pub fn add_writer(&mut self, writer: LangWriter) -> &mut Self {
         self.writer = Some(writer);
         self
     }
-    pub fn add_loader(mut self, loader: LangTemplateLoader) -> Self {
+    pub fn add_template_loader(&mut self, loader: LangTemplateLoader) -> &mut Self {
         self.template_loader = Some(loader);
         self
     }
@@ -129,4 +129,8 @@ impl LangExporterBuilder {
         let f = embed::assets::get_template(&lang).unwrap();
         (lang_str, std::str::from_utf8(f.data.as_ref()).unwrap().to_string())
     }
+}
+
+pub trait LangExporterBuilderCustomizer {
+    fn apply(&self, builder: &mut LangExporterBuilder);
 }

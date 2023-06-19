@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 #[derive(Default, Debug, Clone)]
 pub enum Lang {
     Java,
@@ -44,4 +46,27 @@ pub enum Types {
     String,
     Strings,
     Json,
+}
+
+impl FromStr for Types {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "int" => Ok(Types::Int),
+            "ints" => Ok(Types::Ints),
+            "float" => Ok(Types::Float),
+            "floats" => Ok(Types::Floats),
+            "double" => Ok(Types::Double),
+            "doubles" => Ok(Types::Doubles),
+            "byte" => Ok(Types::Byte),
+            "bytes" => Ok(Types::Bytes),
+            "bool" => Ok(Types::Bool),
+            "bools" => Ok(Types::Bools),
+            "string" => Ok(Types::String),
+            "strings" => Ok(Types::Strings),
+            "json" => Ok(Types::Json),
+            &_ => { Err(format!("config type not supported.{}", s)) }
+        }
+    }
 }
