@@ -2,11 +2,11 @@ use std::error::Error;
 use std::fmt::{Debug, Formatter};
 use std::str::FromStr;
 
-use clap::builder::{PossibleValue, Str, TypedValueParser};
 use clap::{Args, Parser, ValueEnum};
+use clap::builder::{PossibleValue, Str, TypedValueParser};
+
 use crate::args::BuildMode::{Client, Server};
 use crate::args::LoadMode::{AllSheets, FirstSheet};
-
 use crate::lang::Lang;
 
 #[derive(Default, Debug)]
@@ -184,6 +184,20 @@ impl ToString for ConfigExportFileType {
             ConfigExportFileType::Json => { "json" }
         };
         typ.to_string()
+    }
+}
+
+impl ValueEnum for ConfigExportFileType {
+    fn value_variants<'a>() -> &'a [Self] {
+        &[ConfigExportFileType::Csv, ConfigExportFileType::Json, ConfigExportFileType::Sql]
+    }
+
+    fn to_possible_value(&self) -> Option<PossibleValue> {
+        Some(match self {
+            ConfigExportFileType::Csv => PossibleValue::new("csv").help("生成csv格式配置文件"),
+            ConfigExportFileType::Json => PossibleValue::new("json").help("生成json格式配置文件"),
+            ConfigExportFileType::Sql => PossibleValue::new("sql").help("生成sql格式配置文件"),
+        })
     }
 }
 
