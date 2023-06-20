@@ -48,11 +48,11 @@ fn main() {
             .build())
         .set_config_file_type(ConfigExportFileType::Csv)
         .set_lang_export(ExtractArgsBuilder::new()
-            .set_out_dir("gen/src".to_string())
+            .set_out_dir("gen/src/go".to_string())
             .set_naming_func(BuildArgs::default_naming_func)
             .build())
         .set_config_export(ExtractArgsBuilder::new()
-            .set_out_dir("gen/cfg".to_string())
+            .set_out_dir("gen/cfg/csv".to_string())
             .set_naming_func(BuildArgs::default_naming_func)
             .build());
     let args = args_builder.build();
