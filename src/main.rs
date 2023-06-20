@@ -38,7 +38,7 @@ fn main() {
             .build())
         .set_config_type_pattern(LinePatternBuilder::new()
             .set_name("type".to_string())
-            .set_line_no(1)
+            .set_line_no(2)
             .set_extractor(BuildArgs::default_lp_extractor)
             .build())
         .set_config_mode_pattern(LinePatternBuilder::new()

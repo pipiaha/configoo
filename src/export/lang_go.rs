@@ -44,7 +44,7 @@ impl LangExporterBuilderCustomizer for GolangExporter {
                 ctx.tb.sheet_name.as_str(),
                 &ctx.args.lang).as_str());
             data.name = to_first_uppercase(name.as_str());
-            // data.imports.push("import \"github.com/abcd\"".to_string());
+            data.imports.push("import \"redhare/game/module/cfg\"".to_string());
             ctx.tb.header.iter().for_each(|h| {
                 data.fields.push(LangFieldData {
                     field_name: to_first_uppercase(h.field_name.as_str()),
@@ -57,7 +57,7 @@ impl LangExporterBuilderCustomizer for GolangExporter {
 }
 
 fn to_lowercase(src: &str) -> String {
-    let string = src.to_string().chars()
+    let string = src.chars()
         .map(|c| {
             if c.is_uppercase() {
                 return format!("_{}", c.to_lowercase());
@@ -72,8 +72,13 @@ fn to_lowercase(src: &str) -> String {
 }
 
 fn to_first_uppercase(src: &str) -> String {
-    let pos = 0;
-    format!("{}{}", src[..pos].to_uppercase(), src[pos + 1..].to_string())
+    let mut chars = src.chars();
+    if let Some(first) = chars.next() {
+        let cap = first.to_uppercase().collect::<String>();
+        let rest = chars.collect::<String>();
+        return format!("{}{}", cap, rest);
+    }
+    src.to_string()
 }
 
 fn to_go_type(t: &str) -> String {
@@ -93,7 +98,10 @@ fn to_go_type(t: &str) -> String {
             Types::Float => "float32",
             Types::Floats => "[]float32",
         }
-        Err(_) => { "" }
+        Err(err) => {
+            eprintln!("Error mapping type {}. {}", t, err);
+            ""
+        }
     };
     ret.to_string()
 }
