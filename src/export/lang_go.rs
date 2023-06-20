@@ -37,21 +37,24 @@ impl LangExporterBuilderCustomizer for GolangExporter {
     fn apply(&self, builder: &mut LangExporterBuilder) {
         builder.add_modifier(|ctx, data| {
             let name = ctx.tb.name.replace(".xlsx", "");
+            let sheet_name = &ctx.tb.sheet_name;
 
             data.pkg = ctx.args.pkg.clone().to_lowercase();
             data.filename = to_lowercase(ctx.args.lang_export.gen_lang_name(
                 name.as_str(),
                 ctx.tb.sheet_name.as_str(),
                 &ctx.args.lang).as_str());
-            data.name = to_first_uppercase(name.as_str());
-            data.imports.push("import \"redhare/game/module/cfg\"".to_string());
-            ctx.tb.header.iter().for_each(|h| {
-                data.fields.push(LangFieldData {
-                    field_name: to_first_uppercase(h.field_name.as_str()),
-                    field_type: to_go_type(h.field_type.as_str()),
-                    field_comment: h.comment.clone(),
+            data.name = to_first_uppercase(name.as_str()) + to_first_uppercase(sheet_name.as_str()).as_str();
+            // data.imports.push("\"redhare/game/module/cfg\"".to_string());
+            ctx.tb.header.iter()
+                .filter(|h| h.field_name.to_lowercase() != "id")
+                .for_each(|h| {
+                    data.fields.push(LangFieldData {
+                        field_name: to_first_uppercase(h.field_name.as_str()),
+                        field_type: to_go_type(h.field_type.as_str()),
+                        field_comment: h.comment.clone(),
+                    });
                 });
-            });
         });
     }
 }
@@ -84,8 +87,8 @@ fn to_first_uppercase(src: &str) -> String {
 fn to_go_type(t: &str) -> String {
     let ret = match Types::from_str(t) {
         Ok(typ) => match typ {
-            Types::String => "String",
-            Types::Strings => "[]String",
+            Types::String => "string",
+            Types::Strings => "[]string",
             Types::Int => "int32",
             Types::Ints => "[]int32",
             Types::Double => "float64",
@@ -94,7 +97,7 @@ fn to_go_type(t: &str) -> String {
             Types::Bytes => "[]byte",
             Types::Bool => "bool",
             Types::Bools => "[]bool",
-            Types::Json => "String",
+            Types::Json => "string",
             Types::Float => "float32",
             Types::Floats => "[]float32",
         }

@@ -1,5 +1,6 @@
 package {{pkg}}
 
+import "redhare/game/module/cfg"
 {% for i in imports %}
 import {{i}};
 {% endfor %}

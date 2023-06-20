@@ -105,13 +105,13 @@ fn load_config_table(args: &BuildArgs, filename: &str, mut workbook: Xlsx<BufRea
 /// 转换一个excel文件工作簿(sheet)为[ConfigTable]
 fn build_table(args: &BuildArgs, filename: &str, sheet_tuple: (String, Range<DataType>)) -> ConfigTable {
     let mut builder = ConfigTableBuilder::new().set_sheet_name(sheet_tuple.0).set_name(String::from(filename));
-    let mut index = 0;
     let mut comments = vec![];
     let mut server_types = vec![];
     let mut server_names = vec![];
     let mut server_flags = vec![];
-    for row in sheet_tuple.1.rows() {
+    for (idx, row) in sheet_tuple.1.rows().enumerate() {
         // println!("row={:?}, row[0]={:?}", row, row[0]);
+        let index = idx as i32;
         if index == args.comment_pattern.line_no {
             comments = row.to_vec();
         }
@@ -125,7 +125,6 @@ fn build_table(args: &BuildArgs, filename: &str, sheet_tuple: (String, Range<Dat
             server_types = row.to_vec();
         }
         builder = builder.add_data(row.to_vec());
-        index += 1;
     }
     for (index, f) in server_flags.iter().enumerate() {
         let s = f.as_string().unwrap();
