@@ -1,13 +1,20 @@
 package {{pkg}}
 
-import "redhare/game/module/cfg"
+// import "redhare/game/cfg"
 {% for i in imports %}
-import {{i}};
-{% endfor %}
+import {{i}};{% endfor %}
 
 type {{name}} struct {
-    cfg.BaseCfg
+	// cfg.Cfg
     {% for f in fields %}
-    {{f.field_name}}    {{f.field_type}} // {{f.field_comment}}
-    {% endfor %}
+    {{f.field_name}}    {{f.field_type}} // {{f.field_comment}}{% endfor %}
 }
+
+{% for f in fields %}{% set fn = f.field_name | lower %}{% if fn == "id" %}
+func (c *{{name}}) GetID() int32 {
+    return c.{{f.field_name}}
+}
+
+func (c *{{name}}) SetID(id int32)  {
+    c.{{f.field_name}} = id
+}{% endif %}{% endfor %}

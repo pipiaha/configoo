@@ -25,7 +25,7 @@ fn main() {
         .set_config_path("config".to_string())
         .set_lang(Lang::Go)
         .set_config_load_mode(LoadMode::AllSheets)
-        .set_pkg("cfg".to_string())
+        .set_pkg("cfgs".to_string())
         .set_config_comment_pattern(LinePatternBuilder::new()
             .set_name("comment".to_string())
             .set_line_no(0)

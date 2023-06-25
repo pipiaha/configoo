@@ -47,7 +47,7 @@ impl LangExporterBuilderCustomizer for GolangExporter {
             data.name = to_first_uppercase(name.as_str()) + to_first_uppercase(sheet_name.as_str()).as_str();
             // data.imports.push("\"redhare/game/module/cfg\"".to_string());
             ctx.tb.header.iter()
-                .filter(|h| h.field_name.to_lowercase() != "id")
+                // .filter(|h| h.field_name.to_lowercase() != "id")
                 .for_each(|h| {
                     data.fields.push(LangFieldData {
                         field_name: to_first_uppercase(h.field_name.as_str()),
