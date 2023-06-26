@@ -1,0 +1,6 @@
+表的ID,一级时间误差,二级时间误差,节拍最大误差时间,节拍渐变时间,完美分数,不错分数,正常分数,预告移动时间,连续不错/优秀/完美次数,节拍渐变时间
+id,excellent,perfect,good,beatBegin,excellent2score,perfect2score,good2score,movetime,combos,settletime
+int,float,float,float,float,int,int,int,float,ints,float
+all,all,all,all,all,all,all,all,all,all,all
+1,0.1,0.2,0.3,0.4,4,2,1,1.75,2;3;4,3
+2,0.1,0.2,0.3,0.4,4,2,1,2,2;3;4,3

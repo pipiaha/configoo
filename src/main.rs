@@ -1,3 +1,5 @@
+use clap::builder::Str;
+use clap::Parser;
 use tera::{Context, Tera};
 
 use crate::args::{BuildArgs, BuildArgsBuilder, BuildMode, ConfigExportFileType, ExportArgs, ExtractArgsBuilder, LinePattern, LinePatternBuilder, LoadMode};
@@ -16,6 +18,8 @@ mod args;
 mod embed;
 
 fn main() {
+    let cli = Cli::parse();
+    println!("cli: {:?}", cli);
 
     // cfg loader 目前只支持xlsx
     let loader = XlsxConfigLoader::new();
@@ -74,3 +78,36 @@ fn main() {
     println!("load complete");
 }
 
+
+#[derive(Debug, Parser)]
+#[command(author, version, about)]
+struct Cli {
+    #[arg(short = 'b', long)]
+    build: Option<BuildMode>,
+    #[arg(short = 'p', long)]
+    path: Option<String>,
+    #[arg(short = 'l', long)]
+    load: Option<LoadMode>,
+    #[arg( long)]
+    comment_line_no: Option<i32>,
+    #[arg( long)]
+    type_line_no: Option<i32>,
+    #[arg( long)]
+    name_line_no: Option<i32>,
+    #[arg( long)]
+    mode_line_no: Option<i32>,
+    #[arg( long)]
+    out_config_dir: Option<String>,
+    #[arg( long)]
+    out_config_type: Option<ConfigExportFileType>,
+    #[arg( long)]
+    out_config_naming: Option<String>,
+    #[arg( long)]
+    out_lang_type: Option<Lang>,
+    #[arg( long)]
+    out_lang_dir: Option<String>,
+    #[arg( long)]
+    out_lang_naming: Option<String>,
+    #[arg( long)]
+    out_lang_pkg: Option<String>,
+}

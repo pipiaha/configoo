@@ -1,4 +1,7 @@
 use std::str::FromStr;
+use clap::builder::PossibleValue;
+
+use clap::ValueEnum;
 
 #[derive(Default, Debug, Clone)]
 pub enum Lang {
@@ -28,6 +31,26 @@ impl ToString for Lang {
             Lang::Custom => { "" }
         };
         typ.to_string()
+    }
+}
+
+impl ValueEnum for Lang {
+    fn value_variants<'a>() -> &'a [Self] {
+        &[Lang::Java, Lang::CSharp, Lang::Go, Lang::Lua, Lang::Typescript, Lang::Javascript, Lang::Dart, Lang::Rust, Lang::Custom]
+    }
+
+    fn to_possible_value(&self) -> Option<PossibleValue> {
+        Some(match self {
+            Lang::Java =>  PossibleValue::new("java").help("Java"),
+            Lang::CSharp =>  PossibleValue::new("cs").help("CSharp"),
+            Lang::Go =>  PossibleValue::new("go").help("Go"),
+            Lang::Lua =>  PossibleValue::new("lua").help("Lua"),
+            Lang::Typescript =>  PossibleValue::new("ts").help("Typescript"),
+            Lang::Javascript =>  PossibleValue::new("js").help("Javascript"),
+            Lang::Dart =>  PossibleValue::new("dart").help("Dart"),
+            Lang::Rust =>  PossibleValue::new("rs").help("Rust"),
+            Lang::Custom =>  PossibleValue::new("custom").help("Custom"),
+        })
     }
 }
 
