@@ -88,26 +88,26 @@ struct Cli {
     path: Option<String>,
     #[arg(short = 'l', long)]
     load: Option<LoadMode>,
-    #[arg( long)]
+    #[arg(long)]
     comment_line_no: Option<i32>,
-    #[arg( long)]
+    #[arg(long)]
     type_line_no: Option<i32>,
-    #[arg( long)]
+    #[arg(long)]
     name_line_no: Option<i32>,
-    #[arg( long)]
+    #[arg(long)]
     mode_line_no: Option<i32>,
-    #[arg( long)]
+    #[arg(long)]
     out_config_dir: Option<String>,
-    #[arg( long)]
+    #[arg(long)]
     out_config_type: Option<ConfigExportFileType>,
-    #[arg( long)]
+    #[arg(long)]
     out_config_naming: Option<String>,
-    #[arg( long)]
+    #[arg(long)]
     out_lang_type: Option<Lang>,
-    #[arg( long)]
+    #[arg(long)]
     out_lang_dir: Option<String>,
-    #[arg( long)]
+    #[arg(long)]
     out_lang_naming: Option<String>,
-    #[arg( long)]
+    #[arg(long)]
     out_lang_pkg: Option<String>,
 }
